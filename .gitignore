@@ -1,0 +1,12 @@
+.DS_Store
+.mwb.bak
+composer.lock
+.sublime-workspace
+^target$
+.sass-cache
+^bower_components$
+^conf/config.php$
+^cache.properties$
+conf/.*pem
+^node_modules$
+^.tmp$
