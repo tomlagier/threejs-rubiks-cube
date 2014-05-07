@@ -1,3 +1,3 @@
-[submodule "src/us"]
-	path = src/us
+[submodule "us"]
+	path = us
 	url = git@git.samsmk.com:samsung-com/us.git
