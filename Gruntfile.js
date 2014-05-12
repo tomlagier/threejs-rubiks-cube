@@ -41,7 +41,8 @@ module.exports = function(grunt) {
       dev: {
         options: {
           config: 'conf/config.rb',
-          environment: 'development'
+          environment: 'development',
+          outputStyle: 'expanded'
         }
       }
     },
@@ -102,8 +103,8 @@ module.exports = function(grunt) {
         tasks: ['sync:dev','fileblocks:dev']
       },
       compass: {
-        files: ['<%= dirs.src %>/assets/scss/**'],
-        tasks: ['compass:dist']
+        files: ['<%= dirs.src %>/assets/scss/**/*'],
+        tasks: ['compass:dev']
       },
       livereload: {
         options: { livereload : true },
@@ -120,7 +121,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dev', ['clean', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev']);
+  grunt.registerTask('dev', ['clean', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev', 'watch']);
 
   grunt.registerTask('default', ['clean', 'sync:us', 'sync:dist', 'compass:dist', 'fileblocks:dist']);
 
