@@ -126,9 +126,11 @@ That is used in development to automatically refresh the browser tab when a file
 #### [usemin](https://github.com/yeoman/grunt-usemin)
 
 When the default `grunt` task is run, it will replace all of the script files within the `build:js` comment with a single `<script>` tag, referencing `app.js`.
+```html
 <!-- build:js assets/js/app.js -->
 ... all of the scripts for your project
 <!-- endbuild -->
+```
 
 This file will contain the content of all of the scripts within the comment, [concatenated](https://github.com/gruntjs/grunt-contrib-concat) and [uglified](https://github.com/gruntjs/grunt-contrib-uglify).
 
