@@ -183,6 +183,9 @@ _about.scss
 
 
 Include all of your `scss` files in the desired order within the `main.scss` file:
-```@import home, about```
+
+```
+@import home, about
+```
 
 
