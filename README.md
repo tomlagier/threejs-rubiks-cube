@@ -172,7 +172,7 @@ Compass can be configured from the `config.rb` file at the root level of your pr
 
 ## SCSS File Arrangement
 
-Only one `css` file `main.css` is included into the `index.html` file. This file is located in `src/assets/scss/main.scss`, and is compiled into `target/assets/css/main.css` when one of the build tasks is run
+Only one `css` file `main.css` is included into the `index.html` file. This file is located in `src/assets/scss/main.scss`, and is compiled into `target/assets/css/main.css` when one of the build tasks is run.
 
 To add new `scss` files to your project, prefix their filenames with an `_`. This will prevent `compass` from converting these these files into their own `css` files:
 
