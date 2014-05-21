@@ -91,12 +91,67 @@ git submodule update --init
 
 There are two build tasks for projects based on the `project-template`.
 
-### Development Build Process
+### Development Build Task
 To run the development build process:
 
 ```shell
-git submodule update --init
+grunt dev
 ```
+
+This will accomplish the following:
+* Remove existing `target` directory
+* Copy (sync) all assets from the `src` and the `target` directory, including the `us` submodule
+* Compile all scss files in the `src/assets/scss` directory into the `target/assets/css` directory using [compass](http://compass-style.org)
+* Generate `<script>` tags for the files specified in `index.html`. See "Configuring File Blocks" below.
+
+### Default Build Task
+To run the production build process:
+
+```shell
+grunt
+```
+
+This will accomplish the same tasks as the `dev` task, with one exception: `scss` files will not be copies into the `target` directory.
+
+
+#### Additional Default Grunt Task Behavior
+
+##### fileblocks
+The `default` task will use `fileblocks` to remove the following script
+<script src="//localhost:35729/livereload.js"></script>
+That is used in development to automatically refresh the browser tab when a file is changed.
+
+##### [usemin](https://github.com/yeoman/grunt-usemin)
+
+When the default `grunt` task is run, it will replace all of the script files within the `build:js` comment with a single `<script>` tag, referencing `app.js`.
+<!-- build:js assets/js/app.js -->
+... all of the scripts for your project
+<!-- endbuild -->
+
+This file will contain the content of all of the scripts within the comment, [concatenated](https://github.com/gruntjs/grunt-contrib-concat) and [uglified](https://github.com/gruntjs/grunt-contrib-uglify).
+
+## Configuring File Blocks
+
+The grunt task [fileblocks](https://www.npmjs.org/package/grunt-file-blocks) is used to automatically generate `<script>` tags.
+
+To configure `fileblocks` for a new project, open `index.html`. In here, locate the following comment:
+
+```html
+<!--You can load scripts with grunt by using script tags in globbing
+  format here. Uncomment lines below and place files and globs in any
+  order you desire-->
+<!--
+```
+
+And remove it. Now specify scripts you want to load within the `fileblock:js scripts` comment:
+
+<!-- fileblock:js scripts -->
+<script src="assets/js/libs/a.lib.js"></script>
+<script src="assets/js/libs/b.lib.js"></script>
+<script src="assets/js/src/**/*.js"></script>
+<!-- endfileblock -->
+
+Note that globbing patterns can be used `**`, but that `script` tags will be generated in lexigraphic order based on the filename.
 
 
 
