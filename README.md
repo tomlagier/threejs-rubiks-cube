@@ -116,12 +116,12 @@ This will accomplish the same tasks as the `dev` task, with one exception: `scss
 
 #### Additional Default Grunt Task Behavior
 
-##### fileblocks
+#### fileblocks
 The `default` task will use `fileblocks` to remove the following script
 <script src="//localhost:35729/livereload.js"></script>
 That is used in development to automatically refresh the browser tab when a file is changed.
 
-##### [usemin](https://github.com/yeoman/grunt-usemin)
+#### [usemin](https://github.com/yeoman/grunt-usemin)
 
 When the default `grunt` task is run, it will replace all of the script files within the `build:js` comment with a single `<script>` tag, referencing `app.js`.
 <!-- build:js assets/js/app.js -->
