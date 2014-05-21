@@ -118,7 +118,9 @@ This will accomplish the same tasks as the `dev` task, with one exception: `scss
 
 #### fileblocks
 The `default` task will use `fileblocks` to remove the following script
+```html
 <script src="//localhost:35729/livereload.js"></script>
+```
 That is used in development to automatically refresh the browser tab when a file is changed.
 
 #### [usemin](https://github.com/yeoman/grunt-usemin)
