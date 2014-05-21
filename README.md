@@ -145,11 +145,13 @@ To configure `fileblocks` for a new project, open `index.html`. In here, locate 
 
 And remove it. Now specify scripts you want to load within the `fileblock:js scripts` comment:
 
+```html
 <!-- fileblock:js scripts -->
 <script src="assets/js/libs/a.lib.js"></script>
 <script src="assets/js/libs/b.lib.js"></script>
 <script src="assets/js/src/**/*.js"></script>
 <!-- endfileblock -->
+```
 
 Note that globbing patterns can be used `**`, but that `script` tags will be generated in lexigraphic order based on the filename.
 
