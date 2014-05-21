@@ -113,7 +113,6 @@ grunt
 
 This will accomplish the same tasks as the `dev` task, with one exception: `scss` files will not be copies into the `target` directory.
 
-
 #### Additional Default Grunt Task Behavior
 
 #### [fileblocks](https://www.npmjs.org/package/grunt-file-blocks)
@@ -147,7 +146,7 @@ To configure `fileblocks` for a new project, open `index.html`. In here, locate 
 <!--
 ```
 
-And remove it. Now specify scripts you want to load within the `fileblock:js scripts` comment:
+Remove it. Now specify the scripts you want to load within the `fileblock:js scripts` comment:
 
 ```html
 <!-- fileblock:js scripts -->
@@ -159,7 +158,16 @@ And remove it. Now specify scripts you want to load within the `fileblock:js scr
 
 Note that globbing patterns can be used `**`, but that `script` tags will be generated in lexigraphic order based on the filename.
 
+## Watching Files for Changes
+After running `grunt dev`, you can enable `grunt` to watch your project files for changes and automatically recompile or copy files into the `target` directory.
+```
+grunt watch
+```
+This will accomplish the following on the fly:
+* Keep assets synced between your `src` and `target` directory
+* Compile `scss` files in `src` into `css` in `target`
+* Automatically refresh the browser tab
 
+#### Configuring Compass
 
-
-
+Compass can be configured from the `config.rb` file at the root level of your project. If your project requires different folder arrangement or hierarchy, this file must be updated.
