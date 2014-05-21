@@ -168,6 +168,6 @@ This will accomplish the following on the fly:
 * Compile `scss` files in `src` into `css` in `target`
 * Automatically refresh the browser tab
 
-#### Configuring Compass
+## Configuring Compass
 
 Compass can be configured from the `config.rb` file at the root level of your project. If your project requires different folder arrangement or hierarchy, this file must be updated.
