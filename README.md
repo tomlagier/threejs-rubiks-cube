@@ -53,8 +53,6 @@ Next, clone the `project-template` repository into a new repository:
 
 ```shell
 $ git clone --depth 1 --origin source project-template new-project
-Cloning into 'new-project'...
-done.
 ```
 
 note that "new-project" is the name of your new project. Name this accordingly.
