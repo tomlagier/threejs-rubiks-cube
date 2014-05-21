@@ -116,7 +116,7 @@ This will accomplish the same tasks as the `dev` task, with one exception: `scss
 
 #### Additional Default Grunt Task Behavior
 
-#### fileblocks
+#### [fileblocks](https://www.npmjs.org/package/grunt-file-blocks)
 The `default` task will use `fileblocks` to remove the following script
 ```html
 <script src="//localhost:35729/livereload.js"></script>
