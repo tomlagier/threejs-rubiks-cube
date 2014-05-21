@@ -13,29 +13,36 @@
         <meta name="viewport" content="width=device-width" />
     </head>
     <body>
-        <span id="top"></span>
-        <div id="outer-wrap">
-            <div id="inner-wrap">
-                <!--#include virtual="/us/ssi/5.0/header/header.sec"-->
-                <div id="main" role="main">
+      <span id="top"></span>
+      <div id="outer-wrap">
+        <div id="inner-wrap">
+          <!--#include virtual="/us/ssi/5.0/header/header.sec"-->
+          <div id="main" role="main">
 
-                <!-- Content Goes Here -->
+          <!-- Content Goes Here -->
 
-                </div><!-- end main -->
-                    <!--#include virtual="/us/ssi/5.0/footer/footer.sec"-->
-            </div><!-- end innerwrap -->
-        </div><!-- end outer wrap -->
-        <!--#include virtual="/us/ssi/5.0/header/header-scripts.sec"-->
-        <!--#include virtual="/us/ssi/5.0/footer/footer-scripts.sec"-->
-        <!-- fileblock:other reload -->
-        <script src="//localhost:35729/livereload.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <!-- endfileblock -->
+          </div><!-- end main -->
+            <!--#include virtual="/us/ssi/5.0/footer/footer.sec"-->
+        </div><!-- end innerwrap -->
+      </div><!-- end outer wrap -->
+      <!--#include virtual="/us/ssi/5.0/header/header-scripts.sec"-->
+      <!--#include virtual="/us/ssi/5.0/footer/footer-scripts.sec"-->
 
-        <script src="assets/js/src/app.js"></script>
-        <script src="assets/js/libs/onScreen.js"></script>
-        <script src="assets/js/src/**/*.js"></script>
-                    
-        <!-- endbuild -->
-    </body >
+      <!-- fileblock:other reload -->
+      <script src="//localhost:35729/livereload.js"></script>
+      <!-- endfileblock -->
+
+      <!-- build:js assets/js/app.js -->
+      <!-- fileblock:js scripts -->
+      <!--You can load scripts with grunt by using script tags in globbing
+          format here. Uncomment lines below and place files and globs in any
+          order you desire-->
+      <!--
+      <script src="assets/js/libs/a.lib.js"></script>
+      <script src="assets/js/libs/b.lib.js"></script>
+      <script src="assets/js/src/**/*.js"></script>
+      -->
+      <!-- endfileblock -->
+      <!-- endbuild -->
+  </body>
 </html>

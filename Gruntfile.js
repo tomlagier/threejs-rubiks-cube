@@ -47,14 +47,14 @@ module.exports = function(grunt) {
       }
     },
     useminPrepare: {
-      html: '<%= dirs.dest %>/views/scripts.php',
+      html: '<%= dirs.dest %>/index.html',
       options: {
         dest: 'target',
         root: '<%= dirs.src %>'
       }
     },
     usemin: {
-      html: '<%= dirs.dest %>/views/scripts.php',
+      html: '<%= dirs.dest %>/index.html',
     },
     fileblocks: {
       dev: {
@@ -108,7 +108,7 @@ module.exports = function(grunt) {
       },
       livereload: {
         options: { livereload : true },
-        files: ['<%= dirs.dest %>/**/*']
+        files: ['<%= dirs.src %>/**/*']
       }
     }
 
@@ -121,8 +121,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dev', ['clean', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev', 'watch']);
+  grunt.registerTask('dev', ['clean', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev']);
 
-  grunt.registerTask('default', ['clean', 'sync:us', 'sync:dist', 'compass:dist', 'fileblocks:dist']);
+  grunt.registerTask('default', ['clean', 'sync:us', 'sync:dist', 'compass:dist', 'fileblocks:dist', 'useminPrepare', 'concat', 'uglify', 'usemin']);
 
 };
