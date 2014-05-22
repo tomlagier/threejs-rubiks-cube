@@ -125,11 +125,80 @@ That is used in development to automatically refresh the browser tab when a file
 When the default `grunt` task is run, it will replace all of the script files within the `build:js` comment with a single `<script>` tag, referencing `app.js`.
 ```html
 <!-- build:js assets/js/app.js -->
-... all of the scripts for your project
+   ... all of the scripts for your project
 <!-- endbuild -->
 ```
 
 This file will contain the content of all of the scripts within the comment, [concatenated](https://github.com/gruntjs/grunt-contrib-concat) and [uglified](https://github.com/gruntjs/grunt-contrib-uglify).
+
+
+## Including Your Own Version of jQuery
+
+It may be necessary to include your own version of jQuery in a project. To accomplish this without creating conflicts with the Samsung.com:
+
+#### Ensure the following load order:
+* jQuery
+* Project-specific libraries or plugins
+* call noConflict
+* Project scripts
+
+An example of this load order:
+
+```html
+<!-- build:js assets/js/app.js -->
+  <!-- fileblock:js scripts -->
+    <!-- jQuery -->
+    <script src="assets/js/libs/jquery.js"></script>
+    <!-- Project-specific libraries or plugins -->
+    <script src="assets/js/libs/a.lib.js"></script>
+    <!-- call noConflict -->
+    <script>
+      window.jQr = $.noConflict(true);
+    </script>
+    <!-- Project scripts -->
+    <script src="assets/js/src/main.js"></script>
+    <script src="assets/js/src/**/*.js"></script>
+  <!-- endfileblock -->
+<!-- endbuild -->
+```
+
+Please note that all scripts must be within the `fileblock:js scripts` comment, within the `build:js assets/js/app.js` comment.
+
+##### What exactly does this accomplish? (if you must know)
+Loading your own jQuery version will replace the global jQuery version. Some of Samsung.com's scripts are not wrapped within closures, i.e.:
+```javascript
+  // within a closure
+  (function ($) {
+    $('button').click(function () {
+      $('li').size();
+    });
+  })(jQuery)
+```
+The method `size` is deprecated as of jQuery 1.8. 
+
+In this example, when the `'button'` is clicked, `$` references the Samsung.com version of jQuery (and this method works) because the closure created a local reference `$` to Samsung.com's jQuery.
+
+```javascript
+  // no closure
+  $('button').click(function () {
+    $('li').size();
+  });
+```
+In this example, when the `'button'` is clicked, `$` references the jQuery version you loaded and (if its 1.8+), this code will break.
+
+### The JavaScript File Template
+In the path `assets/js/src`, there is a file `template.js`. You must use this file as a template for all of your application scripts if you are loading your own version of jQuery. Even if you are not, it is recommended that you still use the template, with one modification:
+
+```javascript
+  // at the bottom of the file, replace 'jQr'
+
+  })(window, document, jQr);
+
+  // with 'jQuery'
+
+  })(window, document, jQuery);
+
+```
 
 ## Configuring File Blocks
 
@@ -138,9 +207,8 @@ The grunt task [fileblocks](https://www.npmjs.org/package/grunt-file-blocks) is 
 To configure `fileblocks` for a new project, open `index.html`. In here, locate the following comment:
 
 ```html
-<!--You can load scripts with grunt by using script tags in globbing
-  format here. Uncomment lines below and place files and globs in any
-  order you desire-->
+<!--You can load your own scripts with grunt by using script tags in 
+             globbing format here.-->
 <!--
 ```
 
