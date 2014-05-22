@@ -141,6 +141,7 @@ It may be necessary to include your own version of jQuery in a project. To accom
 * Project-specific libraries or plugins
 * Project scripts
 * call noConflict
+
 An example of this load order:
 
 ```html
