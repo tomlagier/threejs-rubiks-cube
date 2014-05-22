@@ -136,12 +136,11 @@ This file will contain the content of all of the scripts within the comment, [co
 
 It may be necessary to include your own version of jQuery in a project. To accomplish this without creating conflicts with the Samsung.com:
 
-#### Ensure the following load order:
+### Ensure the following load order:
 * jQuery
 * Project-specific libraries or plugins
-* call noConflict
 * Project scripts
-
+* call noConflict
 An example of this load order:
 
 ```html
@@ -151,54 +150,34 @@ An example of this load order:
     <script src="assets/js/libs/jquery.js"></script>
     <!-- Project-specific libraries or plugins -->
     <script src="assets/js/libs/a.lib.js"></script>
+    <!-- Project scripts -->
+    <script src="assets/js/src/main.js"></script>
+    <script src="assets/js/src/**/*.js"></script>
     <!-- call noConflict -->
     <script>
       window.jQr = $.noConflict(true);
     </script>
-    <!-- Project scripts -->
-    <script src="assets/js/src/main.js"></script>
-    <script src="assets/js/src/**/*.js"></script>
   <!-- endfileblock -->
 <!-- endbuild -->
 ```
 
 Please note that all scripts must be within the `fileblock:js scripts` comment, within the `build:js assets/js/app.js` comment.
 
-##### What exactly does this accomplish? (if you must know)
-Loading your own jQuery version will replace the global jQuery version. Some of Samsung.com's scripts are not wrapped within closures, i.e.:
-```javascript
-  // within a closure
-  (function ($) {
-    $('button').click(function () {
-      $('li').size();
-    });
-  })(jQuery)
-```
-The method `size` is deprecated as of jQuery 1.8. 
+### The Scripts Template
+In the path `src/assets/js/src` there is a file `template.js`. If you included your own version of jQuery, you must use this template for all of your project's scripts.
 
-In this example, when the `'button'` is clicked, `$` references the Samsung.com version of jQuery (and this method works) because the closure created a local reference `$` to Samsung.com's jQuery.
+#####Why?
+After calling `$.noConflict` (above), the global jQuery version will be reset to the Samsung.com version. In order to ensure that all of your scripts use the version you loaded, you must trap a local reference to that version within a closure:
 
 ```javascript
-  // no closure
-  $('button').click(function () {
-    $('li').size();
-  });
+(function ($) {
+  
+  // closure environment
+ 
+})(jQuery);
 ```
-In this example, when the `'button'` is clicked, `$` references the jQuery version you loaded and (if its 1.8+), this code will break.
+Within this environment, `$` will reference your jQuery version.
 
-### The JavaScript File Template
-In the path `assets/js/src`, there is a file `template.js`. You must use this file as a template for all of your application scripts if you are loading your own version of jQuery. Even if you are not, it is recommended that you still use the template, with one modification:
-
-```javascript
-  // at the bottom of the file, replace 'jQr'
-
-  })(window, document, jQr);
-
-  // with 'jQuery'
-
-  })(window, document, jQuery);
-
-```
 
 ## Configuring File Blocks
 

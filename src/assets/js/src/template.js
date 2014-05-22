@@ -7,5 +7,5 @@
 
     });
 
-})(window, document, jQr);
+})(window, document, jQuery);
 
