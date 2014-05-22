@@ -187,12 +187,10 @@ The grunt task [fileblocks](https://www.npmjs.org/package/grunt-file-blocks) is 
 To configure `fileblocks` for a new project, open `index.html`. In here, locate the following comment:
 
 ```html
-<!--You can load your own scripts with grunt by using script tags in 
-             globbing format here.-->
-<!--
+<!--You can load your own scripts with grunt by using script tags in globbing format here. -->
 ```
 
-Remove it. Now specify the scripts you want to load within the `fileblock:js scripts` comment:
+Specify the scripts you want to load within the `fileblock:js scripts` comment:
 
 ```html
 <!-- fileblock:js scripts -->
