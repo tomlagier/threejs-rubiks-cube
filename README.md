@@ -134,7 +134,7 @@ This file will contain the content of all of the scripts within the comment, [co
 
 ## Including Your Own Version of jQuery
 
-It may be necessary to include your own version of jQuery in a project. To accomplish this without creating conflicts with the Samsung.com:
+It may be necessary to include your own version of jQuery in a project. To accomplish this without creating conflicts with the Samsung.com's jQuery:
 
 ### Ensure the following load order:
 * jQuery
