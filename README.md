@@ -167,7 +167,7 @@ Please note that all scripts must be within the `fileblock:js scripts` comment, 
 ### The Scripts Template
 In the path `src/assets/js/src` there is a file `template.js`. If you included your own version of jQuery, you must use this template for all of your project's scripts.
 
-#####Why?
+##### Why?
 After calling `$.noConflict` (above), the global jQuery version will be reset to the Samsung.com version. In order to ensure that all of your scripts use the version you loaded, you must trap a local reference to that version within a closure:
 
 ```javascript
