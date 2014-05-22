@@ -30,18 +30,41 @@
 
       <!-- fileblock:other reload -->
       <script src="//localhost:35729/livereload.js"></script>
-      <!-- endfileblock -->
 
+      <!-- endfileblock -->
       <!-- build:js assets/js/app.js -->
       <!-- fileblock:js scripts -->
-      <!--You can load scripts with grunt by using script tags in globbing
-          format here. Uncomment lines below and place files and globs in any
-          order you desire-->
+
+
+      <!-- If you need to load your own version of jQuery, replace the script src
+           below with the correct file. -->
+
+      <!--
+      <script src="assets/js/libs/jquery.js"></script>
+      -->
+
+      <!-- Load any libraries or plugins here. -->
+
       <!--
       <script src="assets/js/libs/a.lib.js"></script>
       <script src="assets/js/libs/b.lib.js"></script>
+      -->
+
+      <!-- If you loaded your own jQuery above, you must uncomment this line. -->
+      <!--
+      <script>
+        window.jQr = $.noConflict();
+      </script>
+      -->
+      
+      <!-- You can load your own scripts with grunt by using script tags in 
+           globbing format here. -->
+
+      <!--
+      <script src="assets/js/src/main.js"></script>
       <script src="assets/js/src/**/*.js"></script>
       -->
+
       <!-- endfileblock -->
       <!-- endbuild -->
   </body>
