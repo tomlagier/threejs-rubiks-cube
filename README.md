@@ -154,11 +154,11 @@ An example of this load order:
     <!-- Project scripts -->
     <script src="assets/js/src/main.js"></script>
     <script src="assets/js/src/**/*.js"></script>
-    <!-- call noConflict -->
-    <script>
-      window.jQr = $.noConflict(true);
-    </script>
   <!-- endfileblock -->
+  <!-- call noConflict -->
+  <script>
+    window.jQr = $.noConflict(true);
+  </script>
 <!-- endbuild -->
 ```
 
