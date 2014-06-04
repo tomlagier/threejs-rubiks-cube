@@ -1,31 +1,16 @@
 {
-	"build_systems":
-	[
-	],
-	"folders":
-	[
+	"build_systems": [],
+	"folders": [
 		{
-			"file_exclude_patterns":
-			[
-				".hgtags",
-				"*.sublime-workspace"
-			],
-			"folder_exclude_patterns":
-			[
-				".hg",
-				"ruby",
-				".sass-cache",
-				".tmp",
-				"target"
-			],
-			"path": "/Users/tmcintyr/Documents/gitlabs-samsmk/project-template"
+			"file_exclude_patterns": [ ".hgtags", "*.sublime-workspace"],
+			"folder_exclude_patterns": [ ".hg", "ruby", ".sass-cache", ".tmp", "target" ],
+			"path": "./"
 		},
 		{
-			"path": "/Users/tmcintyr/Documents/gitlabs-samsmk/us/consumer/js"
+			"path": "./src"
 		}
 	],
-	"settings":
-	{
+	"settings": {
 		"tab_size": 2,
 		"translate_tabs_to_spaces": true
 	}
