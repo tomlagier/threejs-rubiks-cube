@@ -34,12 +34,14 @@ module.exports = function(grunt) {
     compass: {
       dist: {
         options: {
+          bundleExec: true,
           config: 'conf/config.rb',
           environment: 'production'
         }
       },
       dev: {
         options: {
+          bundleExec: true,
           config: 'conf/config.rb',
           environment: 'development',
           outputStyle: 'expanded'
@@ -97,14 +99,23 @@ module.exports = function(grunt) {
         jshintrc: '.jshintrc'
       }
     },
+    scsslint: {
+      dist: ['<%= dirs.src %>/assets/scss/**/*'],
+      options: {
+        bundleExec: true,
+        config: './.scss-lint.yml',
+        compact: true,
+        colorizeOutput: true
+      }
+    },
     watch: {
       sync: {
         files: ['<%= dirs.src %>/**', '!**/*.scss'], // ! .coffee, or whatever else
-        tasks: ['sync:dev','fileblocks:dev']
+        tasks: ['jshint', 'sync:dev','fileblocks:dev']
       },
       compass: {
         files: ['<%= dirs.src %>/assets/scss/**/*'],
-        tasks: ['compass:dev']
+        tasks: ['scsslint', 'compass:dev']
       },
       livereload: {
         options: { livereload : true },
@@ -121,8 +132,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dev', ['clean', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev']);
+  grunt.registerTask('dev', ['clean', 'jshint', 'scsslint', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev']);
 
-  grunt.registerTask('default', ['clean', 'sync:us', 'sync:dist', 'compass:dist', 'fileblocks:dist', 'useminPrepare', 'concat', 'uglify', 'usemin']);
+  grunt.registerTask('default', ['clean', 'jshint', 'scsslint', 'sync:us', 'sync:dist', 'compass:dist', 'fileblocks:dist', 'useminPrepare', 'concat', 'uglify', 'usemin']);
 
 };
