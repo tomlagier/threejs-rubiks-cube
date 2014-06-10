@@ -1,3 +1,7 @@
+# Environment Setup
+
+Before you proceed please be sure you have set up your environment follow [these instructions](http://sandbox.smgmb.us/tech.php#environment-setup).
+
 # Project Template for Samsung.com
 
 To set up a new project from this project template, first cd into your project directory:
@@ -71,6 +75,7 @@ Now a project based on the `project-template` is initialized. You can now `push`
 To initialize your new repository with all modules required for the `project-template`, run:
 
 ```shell
+bundle install
 npm install
 ```
 
@@ -172,9 +177,9 @@ After calling `$.noConflict` (above), the global jQuery version will be reset to
 
 ```javascript
 (function ($) {
-  
+
   // closure environment
- 
+
 })(jQuery);
 ```
 Within this environment, `$` will reference your jQuery version.
