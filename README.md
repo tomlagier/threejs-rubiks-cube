@@ -79,7 +79,7 @@ bundle install
 npm install
 ```
 
-This will copy all dependencies from the npm registry into the `node_modules` directory in your project.
+The fist command will download any Ruby Gems needed for this project, the second will copy all dependencies from the npm registry into the `node_modules` directory in your project.
 
 
 ## Initializing the Submodule
