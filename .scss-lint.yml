@@ -70,7 +70,7 @@ linters:
     enabled: false
 
   PropertySortOrder:
-    enabled: true
+    enabled: false
 
   PropertySpelling:
     enabled: true
