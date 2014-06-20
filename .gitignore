@@ -6,6 +6,8 @@ composer.lock
 .mwb.bak
 **.tmp
 
+*.bundle/
+
 ### Bower ###
 bower_components
 
