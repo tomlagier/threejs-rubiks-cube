@@ -19,7 +19,7 @@ module.exports = function(grunt) {
       dist: {
         files: [{
           cwd: '<%= dirs.src %>',
-          src: ['**', '!assets/scss/**'], // .coffee, whatever else
+          src: ['**', '!assets/scss/**', '!assets/js/**'], // .coffee, whatever else
           dest: '<%= dirs.dest %>'
         }]
       },
@@ -52,12 +52,35 @@ module.exports = function(grunt) {
       html: '<%= dirs.dest %>/index.html',
       options: {
         dest: 'target',
-        root: '<%= dirs.src %>'
+        root: '<%= dirs.src %>',
+        flow: {
+        	steps: {
+        		js: ['concat', 'uglifyjs']
+      		},
+					post: {
+					  js: [{
+					    name: 'uglify',
+					    createConfig: function (context, block) {
+					      var generated = context.options.generated;
+					      if (!generated.options) generated.options = {}
+					      if (!generated.options.compress) generated.options.compress = {}
+					      generated.options.compress.drop_console = true;
+					    }
+					  }]
+					}
+        }
       }
     },
     usemin: {
       html: '<%= dirs.dest %>/index.html',
     },
+		removelogging: {
+		  dist: {
+		    src: "src/<%= pkg.name %>.js",
+		    dest: "build/<%= pkg.name %>.clean.js",
+		    options: {}
+		  }
+		},
     fileblocks: {
       dev: {
         src: '<%= dirs.dest %>/index.html',
