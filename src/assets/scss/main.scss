@@ -1,2 +1,7 @@
 @import 'compass';
 @import 'mixins';
+
+
+#project-name {
+  @import 'reset';
+}
