@@ -43,6 +43,9 @@ module.exports = function(grunt) {
         options: {
           bundleExec: true,
           config: 'conf/config.rb',
+          sourcemap: true,
+          cssDir: '<%= dirs.dest %>/assets/css',
+          sassDir: '<%= dirs.dest %>/assets/scss',
           environment: 'development',
           outputStyle: 'expanded'
         }
