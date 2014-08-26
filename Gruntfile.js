@@ -15,21 +15,24 @@ module.exports = function(grunt) {
           cwd: '<%= dirs.include %>',
           src: ['**', '!.git'],
           dest: '<%= dirs.dest %>/<%= dirs.include %>'
-        }]
+        }],
+        updateOnly: true
       },
       dist: {
         files: [{
           cwd: '<%= dirs.src %>',
           src: ['**', '!assets/scss/**', '!assets/js/**'], // .coffee, whatever else
           dest: '<%= dirs.dest %>'
-        }]
+        }],
+        updateOnly: true
       },
       dev: { //copy all files for dev to target dir
         files: [{
           cwd: '<%= dirs.src %>',
           src: ['**'],
           dest: '<%= dirs.dest %>'
-        }]
+        }],
+        updateOnly: true
       }
     },
     compass: {
@@ -137,8 +140,8 @@ module.exports = function(grunt) {
     },
     watch: {
       sync: {
-        files: ['<%= dirs.src %>/**', '!**/*.scss'], // ! .coffee, or whatever else
-        tasks: ['jshint', 'sync:dev','fileblocks:dev']
+        files: ['<%= dirs.src %>/**'], // ! .coffee, or whatever else
+        tasks: ['jshint', 'sync:dev', 'sync:us', 'fileblocks:dev']
       },
       compass: {
         files: ['<%= dirs.src %>/assets/scss/**/*'],
@@ -159,8 +162,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('dev', ['clean', 'jshint', 'scsslint', 'sync:us', 'sync:dev', 'compass:dev', 'fileblocks:dev']);
+  grunt.registerTask('dev', ['clean', 'jshint', 'scsslint', 'sync:dev', 'sync:us', 'compass:dev', 'fileblocks:dev']);
 
-  grunt.registerTask('default', ['clean', 'jshint', 'scsslint', 'sync:us', 'sync:dist', 'compass:dist', 'fileblocks:dist', 'useminPrepare', 'concat', 'uglify', 'usemin']);
+  grunt.registerTask('default', ['clean', 'jshint', 'scsslint', 'sync:dist', 'sync:us', 'compass:dist', 'fileblocks:dist', 'useminPrepare', 'concat', 'uglify', 'usemin']);
 
 };
