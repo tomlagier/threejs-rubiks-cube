@@ -4,16 +4,17 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     dirs: {
-      src: './src',
-      include: './us',
-      dest: './target'
+      src: 'src',
+      include: 'us',
+      dest: 'target'
     },
     clean: ['<%= dirs.dest %>'],
     sync: {
       us: {
         files: [{
-          src: ['<%= dirs.include %>/**', '!<%= dirs.include %>/.git'],
-          dest: '<%= dirs.dest %>'
+          cwd: '<%= dirs.include %>',
+          src: ['**', '!.git'],
+          dest: '<%= dirs.dest %>/<%= dirs.include %>'
         }]
       },
       dist: {
