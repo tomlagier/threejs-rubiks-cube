@@ -81,13 +81,6 @@ module.exports = function(grunt) {
     usemin: {
       html: '<%= dirs.dest %>/index.html',
     },
-		removelogging: {
-		  dist: {
-		    src: "src/<%= pkg.name %>.js",
-		    dest: "build/<%= pkg.name %>.clean.js",
-		    options: {}
-		  }
-		},
     fileblocks: {
       dev: {
         src: '<%= dirs.dest %>/index.html',
