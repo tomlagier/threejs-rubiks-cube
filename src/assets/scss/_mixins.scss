@@ -1,4 +1,4 @@
-/* ------------------------ 
+/* ------------------------
 Breakpoint Usage:
 
 .selector {
@@ -11,14 +11,11 @@ Breakpoint Usage:
 @mixin breakpoint($point) {
   @if $point == desktop {
     @media (min-width: 980px) { @content; }
-  }
-  @else if $point == tablet {
+  } @else if $point == tablet {
     @media (max-width: 979px)  { @content; }
-  }
-  @else if $point == mobile {
+  } @else if $point == mobile {
     @media (max-width: 767px)  { @content; }
-  }
-  @else if $point == s-mobile {
+  } @else if $point == s-mobile {
     @media (max-width: 480px)  { @content; }
   }
 }
@@ -35,5 +32,14 @@ Breakpoint Usage:
     padding-top: $height / $width * 100%;
     content: '';
     display: block;
+  }
+}
+
+
+@mixin background-sprite($icon, $set-dimensions: false) {
+  @extend %#{$icon}-background;
+
+  @if $set-dimensions == true {
+    @extend %#{$icon}-dimensions;
   }
 }

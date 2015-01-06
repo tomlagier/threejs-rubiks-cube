@@ -1,0 +1,15 @@
+{{#items}}
+%{{name}}-dimensions {
+    width: {{px.width}};
+    height: {{px.height}};
+}
+%{{name}}-background {
+    background-position: -{{px.x}} -{{px.y}};
+    background-repeat: no-repeat;
+}
+{{/items}}
+
+
+{{#items}}.{{name}},{{/items}} {
+	background-image: image-url('{{{items.0.image}}}');
+}

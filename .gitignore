@@ -5,7 +5,7 @@
 composer.lock
 .mwb.bak
 **.tmp
-
+/.tmp-gulp-scss-sprites
 *.bundle/
 
 ### Bower ###

@@ -1,7 +1,7 @@
-@import 'compass';
+@import 'bourbon';
 @import 'mixins';
 
 
 #project-name {
-  @import 'compass/reset';
+  // we need to pick a new reset
 }
