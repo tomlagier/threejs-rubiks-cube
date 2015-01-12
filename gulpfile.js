@@ -1,5 +1,7 @@
 var _   			 	= require('lodash'),
 		gulp 			 	= require('gulp'),
+    filter      = require('gulp-filter'),
+    changed     = require('gulp-changed'),
 		conf 			 	= require('./gulpconf'),
 		merge 		 	= require('merge-stream'),
 		del      	  = require('del'),
@@ -13,8 +15,8 @@ var _   			 	= require('lodash'),
     jshint      = require('gulp-jshint'),
     stylish     = require('jshint-stylish'),
 		sourcemaps  = require('gulp-sourcemaps'),
-		connect     = require('gulp-connect'),
-    connectSSI  = require('connect-ssi'),
+    livereload = require('gulp-livereload'),
+    injectReload = require('gulp-inject-reload'),
 		runSequence = require('run-sequence');
 
 var scssSpriteDir = './.tmp-gulp-scss-sprites';
@@ -28,31 +30,18 @@ gulp.task('setdev', function () {
 	isProd = false;
 });
 
-gulp.task('connect', ['build'], function () {
-  connect.server({
-    root: conf.build,
-    middleware: function() {
-      return [connectSSI({
-          dirname: 'src',
-          ext: '.sec'
-      })];
-    },
-    port: 8001,
-    livereload: true
-  });
-});
-
 gulp.task('clean', function (cb) {
   del([conf.build, scssSpriteDir], cb);
 });
 
 gulp.task('copy:us', function () {
-  return gulp.src('./us/**').pipe(gulpif(!isProd, gulp.dest(conf.build+'/us')));
+  return gulp.src('./us/**/*', {base: './'}).pipe(changed(conf.build)).pipe(gulpif(!isProd, gulp.dest(conf.build)));
 });
 
 gulp.task('copy', ['copy:us'], function () {
 	var source = isProd ? conf.source.prod : conf.source.dev;
-	return gulp.src(source, {cwd: conf.src}).pipe(gulp.dest(conf.build)).pipe(connect.reload());
+  var onlyHtml = filter(['*.html']);
+	return gulp.src(source, {cwd: conf.src}).pipe(changed(conf.build)).pipe(onlyHtml).pipe(injectReload()).pipe(onlyHtml.restore()).pipe(gulp.dest(conf.build)).pipe(livereload());
 });
 
 gulp.task('sprites', function () {
@@ -70,7 +59,7 @@ gulp.task('sprites', function () {
 		streams.push(img, css);
 	});
 
-	return merge.apply(null, streams).pipe(connect.reload());
+	return merge.apply(null, streams).pipe(livereload());
 });
 
 gulp.task('css', ['sprites'], function () {
@@ -85,7 +74,7 @@ gulp.task('css', ['sprites'], function () {
 		  .pipe(gulpif(!isProd, sourcemaps.write()))
 		  .pipe(gulp.dest(dest));
 	});
-	return merge.apply(null, streams).pipe(connect.reload());
+	return merge.apply(null, streams).pipe(livereload());
 });
 
 gulp.task('scripts', function () {
@@ -102,10 +91,11 @@ gulp.task('scripts', function () {
 		  .pipe(gulpif(!isProd, sourcemaps.write()))
 		  .pipe(gulp.dest(dest));
 	});
-	return merge.apply(null, streams).pipe(connect.reload());
+	return merge.apply(null, streams).pipe(livereload());
 });
 
 gulp.task('watch', function() {
+  livereload.listen();
   gulp.watch(Object.keys(conf.js), ['scripts']);
   gulp.watch(_.map(conf.sprites, function (src) {
   	return src;
@@ -121,5 +111,5 @@ gulp.task('build', function(callback) {
 });
 
 
-gulp.task('dev', ['setdev', 'build', 'connect', 'watch']);
+gulp.task('dev', ['setdev', 'build', 'watch']);
 gulp.task('default', ['build']);
