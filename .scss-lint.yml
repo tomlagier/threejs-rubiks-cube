@@ -1,4 +1,5 @@
 # Default application configuration that all configurations inherit from.
+exclude: 'src/assets/scss/_normalize.scss'
 linters:
   BorderZero:
     enabled: true
