@@ -106,18 +106,20 @@ gulp.task('scripts', function () {
   var dest = conf.build + '/assets/js/';
 
   var vendor = gulp.src(conf.js.vendor)
+      .pipe(changed(conf.js.vendor))
       .pipe(gulpif(!isProd, sourcemaps.init()))
       .pipe(concat('vendor.js'))
-      .pipe(uglify())
+      .pipe(gulpif(isProd, uglify()))
       .pipe(gulpif(!isProd, sourcemaps.write()))
       .pipe(gulp.dest(dest));
 
   var app = gulp.src(conf.js.app)
+      .pipe(changed(conf.js.app))
       .pipe(gulpif(!isProd, sourcemaps.init()))
       .pipe(jshint())
       .pipe(jshint.reporter(stylish))
       .pipe(concat('app.js'))
-      .pipe(uglify())
+      .pipe(gulpif(isProd, uglify()))
       .pipe(gulpif(!isProd, sourcemaps.write()))
       .pipe(gulp.dest(dest));
 
