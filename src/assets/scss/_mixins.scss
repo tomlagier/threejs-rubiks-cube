@@ -17,6 +17,8 @@ Breakpoint Usage:
     @media (max-width: 767px)  { @content; }
   } @else if $point == s-mobile {
     @media (max-width: 480px)  { @content; }
+  } @else {
+    @media (max-width: #{$point})  { @content; }
   }
 }
 
