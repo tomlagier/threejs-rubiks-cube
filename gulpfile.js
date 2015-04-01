@@ -34,7 +34,7 @@ var conf = {
     "vendor": "<%= src %>/assets/js/libs/*.js",
     "app": "<%= src %>/assets/js/src/*.js"
   },
-  "scss": ["<%= src %>/assets/scss/*.scss"]
+  "scss": ["<%= src %>/assets/scss/**/*.scss"]
 };
 
 //allow our conf to be templateized.
