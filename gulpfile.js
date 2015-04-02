@@ -110,24 +110,24 @@ gulp.task('scripts', function () {
   var dest = conf.build + '/assets/js/';
 
   var vendor = gulp.src(conf.js.vendor)
-      .pipe(changed(conf.js.vendor))
-      .pipe(gulpif(!isProd, sourcemaps.init()))
-      .pipe(concat('vendor.js'))
-      .pipe(gulpif(isProd, uglify()))
-      .pipe(gulpif(!isProd, sourcemaps.write()))
-      .pipe(gulp.dest(dest));
+    .pipe(changed(dest))
+    .pipe(gulpif(!isProd, sourcemaps.init()))
+    .pipe(concat('vendor.js'))
+    .pipe(gulpif(isProd, uglify()))
+    .pipe(gulpif(!isProd, sourcemaps.write()))
+    .pipe(gulp.dest(dest));
 
   var app = gulp.src(conf.js.app)
-      .pipe(changed(conf.js.app))
-      .pipe(gulpif(!isProd, sourcemaps.init()))
-      .pipe(jshint())
-      .pipe(jshint.reporter(stylish))
-      .pipe(concat('app.js'))
-      .pipe(gulpif(isProd, uglify()))
-      .pipe(gulpif(!isProd, sourcemaps.write()))
-      .pipe(gulp.dest(dest));
+    .pipe(changed(dest))
+    .pipe(gulpif(!isProd, sourcemaps.init()))
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish))
+    .pipe(concat('app.js'))
+    .pipe(gulpif(isProd, uglify()))
+    .pipe(gulpif(!isProd, sourcemaps.write()))
+    .pipe(gulp.dest(dest));
 
-	return merge(vendor, app).pipe(livereload());
+  return merge(vendor, app).pipe(livereload());
 });
 
 gulp.task('watch', function () {
