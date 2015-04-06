@@ -25,7 +25,8 @@
     "lodash": "^2.4.1",
     "merge-stream": "^0.1.6",
     "node-bourbon": "^1.2.3",
-    "run-sequence": "^1.0.2"
+    "run-sequence": "^1.0.2",
+    "gulp-notify": "^2.2.0"
   },
   "scripts": {
     "build": "./node_modules/.bin/gulp"

@@ -16,7 +16,8 @@ var _ = require('lodash'),
   sourcemaps = require('gulp-sourcemaps'),
   livereload = require('gulp-livereload'),
   injectReload = require('gulp-inject-reload'),
-  runSequence = require('run-sequence');
+  runSequence = require('run-sequence'),
+  notify = require('gulp-notify');
 
 var scssSpriteDir = './.tmp-gulp-scss-sprites';
 
@@ -99,7 +100,10 @@ gulp.task('css', ['sprites'], function () {
     .pipe(gulpif(!isProd, sourcemaps.init()))
     .pipe(sass({
       outputStyle: isProd ? 'compressed' : 'expanded',
-      includePaths: [require('node-bourbon').includePaths, scssSpriteDir]
+      includePaths: [require('node-bourbon').includePaths, scssSpriteDir],
+      onError: notify.onError(function (error) {
+        return "SASS ERROR: " + error.message;
+      })
     }))
     .pipe(gulpif(!isProd, sourcemaps.write()))
     .pipe(gulp.dest(dest))
@@ -121,11 +125,14 @@ gulp.task('scripts', function () {
     .pipe(changed(dest))
     .pipe(gulpif(!isProd, sourcemaps.init()))
     .pipe(jshint())
-    .pipe(jshint.reporter(stylish))
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'))
+    .on('error', notify.onError({ message: 'JS hint fail'}))
     .pipe(concat('app.js'))
     .pipe(gulpif(isProd, uglify()))
     .pipe(gulpif(!isProd, sourcemaps.write()))
     .pipe(gulp.dest(dest));
+
 
   return merge(vendor, app).pipe(livereload());
 });
