@@ -52,15 +52,7 @@ gulp.task('clean', function (cb) {
   del([conf.build, scssSpriteDir], cb);
 });
 
-gulp.task('copy:us', function () {
-  return gulp.src('./us/**/*', {
-      base: './'
-    })
-    .pipe(changed(conf.build))
-    .pipe(gulpif(!isProd, gulp.dest(conf.build)));
-});
-
-gulp.task('copy', ['copy:us'], function () {
+gulp.task('copy', function () {
   var source = isProd ? conf.source.prod : conf.source.dev;
   var onlyHtml = filter(['*.html']);
   return gulp.src(source, {
