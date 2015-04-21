@@ -45,3 +45,20 @@ Breakpoint Usage:
     @extend %#{$icon}-dimensions;
   }
 }
+
+@mixin transform-center($position:'') {
+  @if($position == 'vertical') {
+    position: absolute;
+    top: 50%;
+    @include transform(translateY(-50%));
+  } @else if($position == 'horizontal') {
+    position: absolute;
+    left: 50%;
+    @include transform(translateX(-50%));   
+  } @else {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    @include transform(translateX(-50%) translateY(-50%));   
+  }
+}
