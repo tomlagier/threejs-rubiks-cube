@@ -8,7 +8,7 @@
       scene: new THREE.Scene(),
       camera: new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 500),
       renderer: new THREE.WebGLRenderer({
-        antialiasing: true
+        antialias: true
       }),
 
       init: function () {
@@ -25,6 +25,7 @@
         this.addLighting();
         this.camera.position.z = 100;
         this.orbitControls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.userPan = false;
       },
       addLighting: function () {
         // var ambient = new THREE.AmbientLight(0xffffff);
