@@ -24,6 +24,7 @@
         //this.renderer.setClearColor(0xFFFFFF, 1);
         this.addLighting();
         this.camera.position.z = 100;
+        this.orbitControls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
       },
       addLighting: function () {
         // var ambient = new THREE.AmbientLight(0xffffff);
@@ -102,19 +103,20 @@
       animate: function(){
         requestAnimationFrame( this.animate.bind(this) );
         this.render();
+        this.orbitControls.update();
       },
       render: function(){
         if(this.mouseX && this.mouseY) {
 
-          if(this.mouseDown) {
-            this.object.rotateX(0.004 * this.YMagnitude);
-            this.object.rotateY(0.007 * this.XMagnitude);
-          }
+          // if(this.mouseDown) {
+          //   this.object.rotateX(0.004 * this.YMagnitude);
+          //   this.object.rotateY(0.007 * this.XMagnitude);
+          // }
           
           //this.camera.position.x += ( this.mouseX - this.camera.position.x ) * 1;
           //this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * 1;
         }
-        this.camera.lookAt( this.scene.position );
+        //this.camera.lookAt( this.scene.position );
         this.renderer.render( this.scene, this.camera );
       }
     };
