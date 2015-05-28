@@ -6,9 +6,9 @@
   var ThreeTest = function (el) {
     return {
       scene: new THREE.Scene(),
-      camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500),
+      camera: new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 500),
       renderer: new THREE.WebGLRenderer({
-
+        antialiasing: true
       }),
 
       init: function () {
@@ -23,19 +23,25 @@
       setupScene: function () {
         //this.renderer.setClearColor(0xFFFFFF, 1);
         this.addLighting();
-        this.camera.position.z = 80;
+        this.camera.position.z = 100;
       },
       addLighting: function () {
-        var ambient = new THREE.AmbientLight(0xffffff);
-        this.scene.add(ambient);
+        // var ambient = new THREE.AmbientLight(0xffffff);
+        // this.scene.add(ambient);
+        this.light1 = new THREE.PointLight(16777215);
+        this.light1.position.set(-10, 10, 50);
+        this.light2 = new THREE.PointLight(16777215);
+        this.light2.position.set(10, 10, -50);
+        this.scene.add(this.light1);
+        this.scene.add(this.light2);
 
-        var directionalLight = new THREE.DirectionalLight(0xffffff);
-        directionalLight.position.set(0, 0, 1);
-        this.scene.add(directionalLight);
+        // var directionalLight = new THREE.DirectionalLight(0xffffff);
+        // directionalLight.position.set(0, 0, 12);
+        //this.scene.add(directionalLight);
       },
       loadAssets: function () {
         this.texture = new THREE.Texture();
-        //this.loadPhoneTexture();
+        this.loadPhoneTexture();
         this.loadPhoneModel();
       },
       loadPhoneTexture: function() {
@@ -56,30 +62,58 @@
         this.object.traverse(function(child) {
           console.log(child);
           if (child instanceof THREE.Mesh) {
-            child.material.opacity = 1;
-            child.material.transparent = false;
+            child.material = new THREE.MeshPhongMaterial({
+              shininess: 50,
+            });
             child.material.map = this.texture;
+            child.material.wireframe = false;
           }
         }.bind(this));
-        object.position.y = -80;
         this.scene.add(this.object);
       },
       bindEvents: function () {
         $(document).on('ready mousemove', function (event) {
           this.setMousePosition(event);
         }.bind(this));
+
+        this.mouseDown = false;
+
+        $(document).on('mousedown', function(){
+          this.mouseDown = true;
+        }.bind(this));
+
+        $(document).on('mouseup', function(){
+          this.mouseDown = false;
+        }.bind(this));
       },
       setMousePosition: function (event) {
-        this.mouseX = (event.clientX - (window.innerWidth / 2)) / 2;
-        this.mouseY = (event.clientY - (window.innerHeight / 2)) / 2;
+        this.updateX = event.clientX - (window.innerWidth / 2);
+        this.updateY = event.clientY - (window.innerHeight / 2);
+
+        this.XDirection = this.updateX > this.mouseX ? 1 : -1;
+        this.YDirection = this.updateY > this.mouseY ? 1 : -1;
+
+        this.XMagnitude = this.updateX - this.mouseX;
+        this.YMagnitude = this.updateY - this.mouseY;
+
+        this.mouseX = this.updateX;
+        this.mouseY = this.updateY;
       },
       animate: function(){
         requestAnimationFrame( this.animate.bind(this) );
         this.render();
       },
       render: function(){
-        this.camera.position.x += ( this.mouseX - this.camera.position.x ) * 0.05;
-        this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * 0.05;
+        if(this.mouseX && this.mouseY) {
+
+          if(this.mouseDown) {
+            this.object.rotateX(0.004 * this.YMagnitude);
+            this.object.rotateY(0.007 * this.XMagnitude);
+          }
+          
+          //this.camera.position.x += ( this.mouseX - this.camera.position.x ) * 1;
+          //this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * 1;
+        }
         this.camera.lookAt( this.scene.position );
         this.renderer.render( this.scene, this.camera );
       }
