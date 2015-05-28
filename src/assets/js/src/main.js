@@ -13,18 +13,16 @@
 
       init: function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
         $(el).append(this.renderer.domElement);
         this.setupScene();
         this.loadAssets();
         this.bindEvents();
-        //this.render();
+        this.animate();
       },
       setupScene: function () {
-        this.renderer.setClearColor(0xFFFFFF, 1);
+        //this.renderer.setClearColor(0xFFFFFF, 1);
         this.addLighting();
-        this.chest = {
-          texture: new THREE.Texture()
-        };
         this.camera.position.z = 80;
       },
       addLighting: function () {
@@ -36,83 +34,36 @@
         this.scene.add(directionalLight);
       },
       loadAssets: function () {
-        this.loadDragonModel();
+        this.texture = new THREE.Texture();
+        //this.loadPhoneTexture();
+        this.loadPhoneModel();
       },
-      loadDragonModel: function () {
-        var JSONLoader = new THREE.JSONLoader();
-        JSONLoader.load('/assets/models/note4.json', function (geometry, materials) {
-          this.createScene(geometry, materials);
+      loadPhoneTexture: function() {
+        var ImageLoader = new THREE.ImageLoader();
+        ImageLoader.load('/assets/models/note4texture.png', function(image){
+          this.texture.image = image;
+          this.texture.needsUpdate = true;
         }.bind(this));
       },
-      createScene: function (geometry, materials) {
-        var mesh;
-
-        //geometry.animation = geometry.animations[0];
-
-        //this.ensureLoop(geometry.animation);
-
-        //material = mesh.material.materials;
-
-        for (var i = 0; i < materials.length; i++) {
-          var mat = materials[i];
-          mat.skinning = true;
-          mat.morphTargets = true;
-          mat.wrapAround = true;
-        }
-
-        mesh = new THREE.SkinnedMesh(
-          geometry,
-          materials[0]
-        );
-
-        // this.animation = new THREE.Animation(
-        //   mesh,
-        //   geometry.animation
-        // );
-
-        var helper = new THREE.SkeletonHelper(mesh);
-        helper.material.linewidth = 3;
-        helper.visible = false;
-
-        this.scene.add(helper);
-        this.scene.add(mesh);
-
-        // this.animation.play();
-        this.render();
+      loadPhoneModel: function () {
+        var OBJLoader = new THREE.OBJLoader();
+        OBJLoader.load('/assets/models/note4.obj', function (object) {
+          this.createScene(object);
+        }.bind(this));
       },
-      ensureLoop: function (animation) {
-        for (var i = 0; i < animation.hierarchy.length; i++) {
-
-          var bone = animation.hierarchy[i];
-
-          var first = bone.keys[0];
-          var last = bone.keys[bone.keys.length - 1];
-
-          last.pos = first.pos;
-          last.rot = first.rot;
-          last.scl = first.scl;
-
-        }
+      createScene: function (object) {
+        this.object = object;
+        this.object.traverse(function(child) {
+          console.log(child);
+          if (child instanceof THREE.Mesh) {
+            child.material.opacity = 1;
+            child.material.transparent = false;
+            child.material.map = this.texture;
+          }
+        }.bind(this));
+        object.position.y = -80;
+        this.scene.add(this.object);
       },
-      // loadChestModel: function () {
-      //   var OBJLoader = new THREE.OBJLoader();
-      //   OBJLoader.load('/assets/models/dragon.obj', function (chest) {
-      //     this.chest.object = chest;
-      //     this.chest.object.traverse(function (child) {
-      //       if (child instanceof THREE.Mesh) {
-      //         child.material.map = this.chest.texture;
-      //       }
-      //     }.bind(this));
-      //     this.scene.add(this.chest.object);
-      //   }.bind(this));
-      // },
-      // loadChestTexture: function () {
-      //   var ImageLoader = new THREE.ImageLoader();
-      //   ImageLoader.load('/assets/textures/dragontexture.png', function (image) {
-      //     this.chest.texture.image = image;
-      //     this.chest.texture.needsUpdate = true;
-      //   }.bind(this));
-      // },
       bindEvents: function () {
         $(document).on('ready mousemove', function (event) {
           this.setMousePosition(event);
@@ -122,18 +73,15 @@
         this.mouseX = (event.clientX - (window.innerWidth / 2)) / 2;
         this.mouseY = (event.clientY - (window.innerHeight / 2)) / 2;
       },
-      render: function () {
-        //requestAnimationFrame(this.render.bind(this));
-        if (this.mouseX && this.mouseY) {
-          this.camera.position.x += (this.mouseX - this.camera.position.x) * 0.05;
-          this.camera.position.y += (-this.mouseY - this.camera.position.y) * 0.05;
-        }
-
-        this.camera.lookAt(this.scene.position);
-
-        //THREE.AnimationHandler.update(0.01);
-
-        this.renderer.render(this.scene, this.camera);
+      animate: function(){
+        requestAnimationFrame( this.animate.bind(this) );
+        this.render();
+      },
+      render: function(){
+        this.camera.position.x += ( this.mouseX - this.camera.position.x ) * 0.05;
+        this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * 0.05;
+        this.camera.lookAt( this.scene.position );
+        this.renderer.render( this.scene, this.camera );
       }
     };
   };
