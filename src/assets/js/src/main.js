@@ -48,14 +48,14 @@
       },
       loadPhoneTexture: function() {
         var ImageLoader = new THREE.ImageLoader();
-        ImageLoader.load('/assets/models/note4texture.png', function(image){
+        ImageLoader.load('assets/models/note4texture.png', function(image){
           this.texture.image = image;
           this.texture.needsUpdate = true;
         }.bind(this));
       },
       loadPhoneModel: function () {
         var OBJLoader = new THREE.OBJLoader();
-        OBJLoader.load('/assets/models/note4.obj', function (object) {
+        OBJLoader.load('assets/models/note4.obj', function (object) {
           this.createScene(object);
         }.bind(this));
       },
