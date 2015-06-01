@@ -32,7 +32,7 @@ var conf = {
     "icons": "<%= src %>/assets/images/sprites/icons/*.png"
   },
   "js": {
-    "vendor": "<%= src %>/assets/js/libs/*.js",
+    "vendor": ["<%= src %>/assets/js/libs/three.min.js", "<%= src %>/assets/js/libs/jquery-1.11.1.js", "<%= src %>/assets/js/libs/*.js"],
     "app": "<%= src %>/assets/js/src/*.js"
   },
   "scss": ["<%= src %>/assets/scss/**/*.scss"]
