@@ -44,7 +44,6 @@
         this.camera.position.set(0, 0, 50);
       },
       addLighting: function () {
-        
         this.lights = {
           ambientLight: new THREE.AmbientLight(0x444444),
           directionalLight1 : new THREE.DirectionalLight(0xffffff, 1),
@@ -117,23 +116,23 @@
         };
       },
       loadTextures: function () {
-        var mapUrl = 'assets/models/tex/diff_2k_8bit.png';
+        var mapUrl = 'assets/models/textures/diff_2k_8bit.png';
         var map = THREE.ImageUtils.loadTexture(mapUrl);
         map.anisotropy = 1;
         map.filters = THREE.LinearFilter;
 
-        var screenTextureUrl = 'assets/models/tex/screen_square.png';
+        var screenTextureUrl = 'assets/models/textures/screen_square.png';
         var screenTexture = new THREE.ImageUtils.loadTexture(screenTextureUrl);
         screenTexture.anisotropy = 8;
         screenTexture.filters = THREE.LinearFilter;
 
-        var mapNoise = THREE.ImageUtils.loadTexture('assets/models/tex/noise.png');
+        var mapNoise = THREE.ImageUtils.loadTexture('assets/models/textures/noise.png');
         mapNoise.anisotropy = 16;
         mapNoise.wrapS = THREE.RepeatWrapping;
         mapNoise.wrapT = THREE.RepeatWrapping;
         mapNoise.repeat.set(200, 50);
 
-        var mapAlpha = THREE.ImageUtils.loadTexture('assets/models/tex/logo_alpha.png');
+        var mapAlpha = THREE.ImageUtils.loadTexture('assets/models/textures/logo_alpha.png');
         mapAlpha.format = THREE.LuminanceFormat;
         mapAlpha.anisotropy = 8;
 
@@ -238,7 +237,7 @@
       },
       loadPhoneModel: function () {
         var OBJLoader = new THREE.OBJMTLLoader();
-        OBJLoader.load('assets/models/edge6-2.obj', 'assets/models/edge6.mtl', function (object) {
+        OBJLoader.load('assets/models/note4_v13.obj', 'assets/models/note4.mtl', function (object) {
           this.createGeometries(object);
         }.bind(this));
       },
