@@ -19,20 +19,19 @@
         this.bindEvents();
         this.animate();
       },
-      setupRenderer: function(){
+      setupRenderer: function () {
         this.renderer.autoClear = false;
         this.renderer.shadowMapEnabled = true;
         this.renderer.sortObjects = false;
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor( 0x000000, 0 );
-        this.renderer.setPixelRatio( window.devicePixelRatio );
+        this.renderer.setClearColor(0x000000, 0);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.alpha = true;
         $(el).append(this.renderer.domElement);
       },
       setupScene: function () {
         this.setupCamera();
         this.addLighting();
-        this.setupCubeMaps();
         this.loadTextures();
         this.setupMaterials();
         this.loadPhoneModel();
@@ -46,9 +45,9 @@
       addLighting: function () {
         this.lights = {
           ambientLight: new THREE.AmbientLight(0x444444),
-          directionalLight1 : new THREE.DirectionalLight(0xffffff, 1),
-          directionalLight2 : new THREE.DirectionalLight(0xffffff, 1.5),
-          directionalLight3 : new THREE.DirectionalLight(0xffffff, 1.5),
+          directionalLight1: new THREE.DirectionalLight(0xffffff, 1),
+          directionalLight2: new THREE.DirectionalLight(0xffffff, 1.5),
+          directionalLight3: new THREE.DirectionalLight(0xffffff, 1.5),
         };
 
         var rotationMatrix = new THREE.Matrix4();
@@ -75,169 +74,239 @@
         this.scene.add(this.lights.directionalLight2);
         this.scene.add(this.lights.directionalLight3);
       },
-      setupCubeMaps: function () {
-        // ENVIRONMENT REFLECTION MAP SHARPS
-        var path = 'assets/models/cubemaps/environment/';
-        var format = '.jpg';
-        var urls = [
-          path + 'px' + format, path + 'nx' + format,
-          path + 'py' + format, path + 'ny' + format,
-          path + 'pz' + format, path + 'nz' + format
-        ];
-        var reflectionEnv = THREE.ImageUtils.loadTextureCube(urls);
-        reflectionEnv.format = THREE.RGBFormat;
-
-        // ENVIRONMENT REFLECTION MAP SOFT
-        var path2 = 'assets/models/cubemaps/metal/';
-        var format2 = '.jpg';
-        var urls2 = [
-          path2 + 'px' + format2, path2 + 'nx' + format2,
-          path2 + 'py' + format2, path2 + 'ny' + format2,
-          path2 + 'pz' + format2, path2 + 'nz' + format2
-        ];
-        var reflectionMetal = THREE.ImageUtils.loadTextureCube(urls2);
-        reflectionMetal.format = THREE.RGBFormat;
-
-        // ENVIRONMENT REFLECTION MAP DEBUG
-        var path3 = 'assets/models/cubemaps/glass/'; //env_glass
-        var format3 = '.jpg';
-        var urls3 = [
-          path3 + 'px' + format3, path3 + 'nx' + format3,
-          path3 + 'py' + format3, path3 + 'ny' + format3,
-          path3 + 'pz' + format3, path3 + 'nz' + format3
-        ];
-        var reflectionGlass = THREE.ImageUtils.loadTextureCube(urls3);
-        reflectionGlass.format = THREE.RGBFormat;
-
-        this.cubemaps = {
-          reflectionSharp: reflectionEnv,
-          reflectionMetal: reflectionMetal,
-          reflectionGlass: reflectionGlass
-        };
-      },
       loadTextures: function () {
-        var mapUrl = 'assets/models/textures/diff_2k_8bit.png';
-        var map = THREE.ImageUtils.loadTexture(mapUrl);
-        map.anisotropy = 1;
-        map.filters = THREE.LinearFilter;
+        this.textures = {};
 
-        var screenTextureUrl = 'assets/models/textures/screen_square.png';
-        var screenTexture = new THREE.ImageUtils.loadTexture(screenTextureUrl);
-        screenTexture.anisotropy = 8;
-        screenTexture.filters = THREE.LinearFilter;
+        this.textures.mapHeight = THREE.ImageUtils.loadTexture('assets/images/textures/back_b.jpg');
+        this.textures.mapHeight.anisotropy = 4;
+        this.textures.mapHeight.wrapS = THREE.RepeatWrapping;
+        this.textures.mapHeight.wrapT = THREE.RepeatWrapping;
+        this.textures.mapHeight.format = THREE.RGBFormat;
 
-        var mapNoise = THREE.ImageUtils.loadTexture('assets/models/textures/noise.png');
-        mapNoise.anisotropy = 16;
-        mapNoise.wrapS = THREE.RepeatWrapping;
-        mapNoise.wrapT = THREE.RepeatWrapping;
-        mapNoise.repeat.set(200, 50);
+        this.textures.mapFace = THREE.ImageUtils.loadTexture('assets/images/textures/lines.jpg');
+        this.textures.mapFace.wrapS = THREE.RepeatWrapping;
+        this.textures.mapFace.wrapT = THREE.RepeatWrapping;
+        this.textures.mapFace.repeat.set(200, 200);
 
-        var mapAlpha = THREE.ImageUtils.loadTexture('assets/models/textures/logo_alpha.png');
-        mapAlpha.format = THREE.LuminanceFormat;
-        mapAlpha.anisotropy = 8;
+        this.textures.mapNoise = THREE.ImageUtils.loadTexture('assets/images/textures/noise.png');
+        this.textures.mapNoise.anisotropy = 16;
+        this.textures.mapNoise.wrapS = THREE.RepeatWrapping;
+        this.textures.mapNoise.wrapT = THREE.RepeatWrapping;
+        this.textures.mapNoise.repeat.set(5, 5);
 
-        this.textures = {
-          mainMap: map,
-          noiseMap: mapNoise,
-          alphaMap: mapAlpha,
-          screenTexture: screenTexture
-        };
+        this.textures.mapPenAlpha = THREE.ImageUtils.loadTexture('assets/images/textures/spen_alpha.png');
+        this.textures.mapPenAlpha.anisotropy = 4;
+        this.textures.mapPenAlpha.wrapS = THREE.RepeatWrapping;
+        this.textures.mapPenAlpha.wrapT = THREE.RepeatWrapping;
+        this.textures.mapPenAlpha.repeat.set(1, 65);
+
+        this.textures.mapMask = THREE.ImageUtils.loadTexture('assets/images/textures/graphics.png');
+        this.textures.mapMask.format = THREE.LuminanceFormat;
+        this.textures.mapMask.anisotropy = 8;
+
+        this.textures.mapCamera = THREE.ImageUtils.loadTexture('assets/images/textures/camera.jpg');
+        this.textures.mapScreen = THREE.ImageUtils.loadTexture('assets/images/textures/screen.jpg');
+        this.textures.mapScreen.anisotropy = 4;
+        this.textures.mapScreen.filters = THREE.LinearFilter;
+
+        this.textures.mapSDcard = THREE.ImageUtils.loadTexture('assets/images/textures/sdcard.jpg');
+        this.textures.mapBattery = THREE.ImageUtils.loadTexture('assets/images/textures/battery.png');
+
+        var urls = [
+          'assets/images/cubemaps/environment/pos-x.jpg',
+          'assets/images/cubemaps/environment/neg-x.jpg',
+          'assets/images/cubemaps/environment/pos-y.jpg',
+          'assets/images/cubemaps/environment/neg-y.jpg',
+          'assets/images/cubemaps/environment/pos-z.jpg',
+          'assets/images/cubemaps/environment/neg-z.jpg'
+        ];
+
+        this.textures.mapCube = THREE.ImageUtils.loadTextureCube(urls);
+        this.textures.mapCube.format = THREE.RGBFormat;
+
       },
       setupMaterials: function () {
-        var screenMaterial = new THREE.MeshBasicMaterial({
-          map: this.textures.screenTexture,
-          overdraw: true
+        this.materials = {};
+        this.materials.cover = new THREE.MeshPhongMaterial({
+          ambient: 0x000000,
+          color: 0x0e0e0e,
+          specular: 0x303030,
+          shininess: 17,
+          bumpMap: this.textures.mapHeight,
+          bumpScale: -0.02,
+          transparent: false,
+          metal: false
         });
 
-        var buttonsMaterial = new THREE.MeshBasicMaterial({
-          ambient: 0x9cb8cf,
-          color: 0x9cb8cf,
-          transparent: true,
-          emission: 0x9cb8cf
+        this.materials.block = new THREE.MeshBasicMaterial({
+          color: 0x000000,
+          side: THREE.DoubleSide,
+          transparent: false
         });
 
-        var chromeMaterial = new THREE.MeshPhongMaterial({
-          ambient: 0xb1b1b1,
-          color: 0xb1b1b1,
+        this.materials.metal = new THREE.MeshPhongMaterial({
+          ambient: 0x111111,
+          color: 0x111111,
+          specular: 0x666666,
+          shininess: 15,
+          reflectivity: 0.3,
+          envMap: this.textures.mapCube
+        });
+
+        this.materials.metalX = new THREE.MeshPhongMaterial({
+          ambient: 0x111111,
+          color: 0x111111,
           specular: 0x888888,
-          shininess: 20,
-          reflectivity: 0.6,
-          bumpMap: this.textures.noiseMap,
-          bumpScale: 0.0003,
-          envMap: this.cubemaps.reflectionMetal,
-          transparent: true,
-          metal: true
+          shininess: 15,
+          reflectivity: 0.3,
+          bumpMap: this.textures.mapNoise,
+          bumpScale: 0.01,
+          specularMap: this.textures.mapNoise,
+          envMap: this.textures.mapCube
         });
 
-        chromeMaterial.color.setHSL(0, 0, 0.3);
-
-        var chromeTrimMaterial = new THREE.MeshLambertMaterial({});
-        chromeTrimMaterial.color.setHSL(0, 0, 0.4);
-
-        var stripesMaterial = new THREE.MeshPhongMaterial({
-          ambient: 0x6c6c6c,
-          color: 0x6c6c6c,
+        this.materials.metalXSide = new THREE.MeshPhongMaterial({
+          ambient: 0x111111,
+          color: 0x111111,
           specular: 0x888888,
-          shininess: 1,
-          reflectivity: 0.4,
-          bumpMap: this.textures.noiseMap,
-          bumpScale: 0.0002,
-          envMap: this.cubemaps.reflectionMetal,
-          metal: true
+          shininess: 15,
+          reflectivity: 0.3,
+          bumpMap: this.textures.mapNoise,
+          bumpScale: 0.01,
+          specularMap: this.textures.mapNoise,
+          envMap: this.textures.mapCube,
+          transparent: true
         });
 
-        stripesMaterial.color.setHSL(0, 0, 0.4);
+        this.materials.metalSilverSide = new THREE.MeshPhongMaterial({
+          color: 0xefefef,
+          reflectivity: 0.8,
+          specular: 0xffffff,
+          envMap: this.textures.mapCube,
+          transparent: true
+        });
 
-        var frontFaceMaterial = new THREE.MeshPhongMaterial({
-          ambient: 0x323232,
-          reflectivity: 1,
+        this.materials.metalSilver = new THREE.MeshPhongMaterial({
+          color: 0xefefef,
+          reflectivity: 0.8,
+          specular: 0xffffff,
+          envMap: this.textures.mapCube,
+          transparent: true
+        });
+
+        this.materials.camera = new THREE.MeshBasicMaterial({
+          map: this.textures.mapCamera
+        });
+
+        this.materials.screen = new THREE.MeshBasicMaterial({
+          map: this.textures.mapScreen
+        });
+
+        this.materials.glass = new THREE.MeshLambertMaterial({
+          color: 0xffffff,
+          opacity: 0.2,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          envMap: this.textures.mapCube,
+          depthWrite: false
+        });
+
+        this.materials.face = new THREE.MeshLambertMaterial({
+          ambient: 0x000000,
+          color: 0x777777,
+          map: this.textures.mapFace
+        });
+
+        this.materials.graphics = new THREE.MeshPhongMaterial({
+          color: 0x9e9e9e,
+          reflectivity: 0.5,
+          specular: 0xffffff,
+          specularMap: this.textures.mapMask,
+          alphaMap: this.textures.mapMask,
+          envMap: this.textures.mapCube,
+          transparent: true,
+          depthWrite: false
+        });
+
+        this.materials.button = new THREE.MeshPhongMaterial({
+          color: 0xb9efff,
+          specular: 0xffffff,
+          alphaMap: this.textures.mapMask,
+          transparent: true,
+          depthWrite: false
+        });
+
+        this.materials.battery = new THREE.MeshPhongMaterial({
+          ambient: 0x101010,
+          color: 0xeeeeee,
+          map: this.textures.mapBattery,
+          specular: 0x222222,
           shininess: 10,
-          specular: 0x323232,
-          map: this.textures.mainMap,
-          envMap: this.cubemaps.reflectionEnv
+          reflectivity: 0.2,
+          envMap: this.textures.mapCube,
         });
 
-        var bodyMaterial = new THREE.MeshPhongMaterial({
-          ambient: 0x000721,
-          reflectivity: 1,
-          shininess: 1,
-          specular: 0x5b5b5b,
-          map: this.textures.mainMap,
-          envMap: this.cubemaps.reflectionEnv
+        this.materials.sdCard = new THREE.MeshPhongMaterial({
+          ambient: 0x111111,
+          color: 0xffffff,
+          specular: 0x666666,
+          shininess: 5,
+          reflectivity: 0.2,
+          map: this.textures.mapSDcard,
+          envMap: this.textures.mapCube,
+
         });
 
-        var lensGlassMaterial = new THREE.MeshPhongMaterial({
-          shininess: 100,
-          opacity: 0.15,
+        this.materials.pen = new THREE.MeshPhongMaterial({
+          ambient: 0x101010,
+          color: 0x080808,
+          specular: 0x303030,
+          shininess: 17,
+          bumpMap: this.textures.mapPenAlpha,
+          bumpScale: 0.04,
+          metal: false
+        });
+
+        this.materials.penWire = new THREE.MeshBasicMaterial({
+          shading: THREE.FlatShading,
+          map: this.textures.mapPenAlpha,
           transparent: true,
-          envMap: this.cubemaps.reflectionGlass,
-          depthWrite: true
+          opacity: 0.7,
+          color: 0xffffff
         });
 
-        lensGlassMaterial.color.setHSL(0, 0, 0.5);
+        this.materials.wire = new THREE.MeshBasicMaterial({
+          shading: THREE.FlatShading,
+          color: 0xffffff
+        });
 
-        var shadeLogoMaterial= new THREE.MeshBasicMaterial({
-          color: 0x80919e,
-          alphaMap: this.textures.alphaMap,
+        this.materials.wirePen = new THREE.MeshBasicMaterial({
+          shading: THREE.FlatShading,
+          color: 0xffffff,
+          transparent: true
+        });
+
+        this.materials.shade = new THREE.MeshBasicMaterial({
+          shading: THREE.FlatShading,
           transparent: true,
-          depthWrite: true
+          opacity: 0.7,
+          color: 0x111111
         });
 
-        this.materials = {
-          screenMaterial: screenMaterial,
-          buttonsMaterial: buttonsMaterial,
-          chromeMaterial: chromeMaterial,
-          chromeTrimMaterial: chromeTrimMaterial,
-          stripesMaterial: stripesMaterial,
-          frontFaceMaterial: frontFaceMaterial,
-          bodyMaterial: bodyMaterial,
-          lensGlassMaterial: lensGlassMaterial,
-          shadeLogoMaterial: shadeLogoMaterial,
-        };
+        this.materials.shadeLogo = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          alphaMap: this.textures.mapMask,
+          transparent: true,
+          depthWrite: false
+        });
+
+        this.materials.hidden = new THREE.MeshBasicMaterial({
+          visible: false
+        });
       },
       loadPhoneModel: function () {
         var OBJLoader = new THREE.OBJMTLLoader();
-        OBJLoader.load('assets/models/note4_v13.obj', 'assets/models/note4.mtl', function (object) {
+        OBJLoader.load('assets/models/note4-2.obj', 'assets/models/note4.mtl', function (object) {
           this.createGeometries(object);
         }.bind(this));
       },
@@ -245,52 +314,52 @@
         this.object = object;
         console.group('Children');
         this.object.traverse(function (child) {
-          //console.log(child.name, ':', child);
+          console.log(child.name, ':', child);
           this.createGeometry(child);
         }.bind(this));
         console.groupEnd('Children');
         this.scene.add(this.object);
       },
-      createGeometry: function(child) {
-        if(!child.geometry || !child.geometry.faces || !child.geometry.faces.length) {
+      createGeometry: function (child) {
+        if (!child.geometry || !child.geometry.faces || !child.geometry.faces.length) {
           return;
         }
 
         var parentName = child.parent.name.split('.')[0];
 
         switch (parentName) {
-          case 'body':
+        case 'body':
 
-            break;
-          case 'frontFace':
-            child.material = this.materials.frontFaceMaterial;
-            break;
-          case 'Stripes':
-            child.material = this.materials.stripesMaterial;
-            break;
-          case 'logo':
-            child.material = this.materials.shadeLogoMaterial;
-            child.castShadow = true;
-            break;
-          case 'screen':
-            child.material = this.materials.screenMaterial;
-            child.castShadow = true;
-            break;
-          case 'body':
-            child.material = this.materials.bodyMaterial;
-            child.castShadow = true;
-            break;
-          case 'glass':
-            child.material = this.materials.lensGlassMaterial;
-            child.castShadow = true;
-            break;
-          case 'buttons':
-            child.material = this.materials.buttonsMaterial;
-            break;
-          case 'chrome':
-            child.material = this.materials.chromeMaterial;
-            child.castShadow = true;
-            break;
+          break;
+        case 'frontFace':
+          child.material = this.materials.frontFaceMaterial;
+          break;
+        case 'Stripes':
+          child.material = this.materials.stripesMaterial;
+          break;
+        case 'logo':
+          child.material = this.materials.shadeLogoMaterial;
+          child.castShadow = true;
+          break;
+        case 'screen':
+          child.material = this.materials.screenMaterial;
+          child.castShadow = true;
+          break;
+        case 'body':
+          child.material = this.materials.bodyMaterial;
+          child.castShadow = true;
+          break;
+        case 'glass':
+          child.material = this.materials.lensGlassMaterial;
+          child.castShadow = true;
+          break;
+        case 'buttons':
+          child.material = this.materials.buttonsMaterial;
+          break;
+        case 'chrome':
+          child.material = this.materials.chromeMaterial;
+          child.castShadow = true;
+          break;
         }
       },
       bindEvents: function () {
