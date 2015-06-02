@@ -12,12 +12,24 @@
         alpha: true,
         clearAlpha: 0
       }),
-
       init: function () {
+        this.setupPrefixes();
         this.setupRenderer();
         this.setupScene();
         this.bindEvents();
         this.animate();
+      },
+      setupPrefixes: function(){
+        navigator.getUserMedia = (navigator.getUserMedia || 
+          navigator.webkitGetUserMedia || 
+          navigator.mozGetUserMedia || 
+          navigator.msGetUserMedia);
+        if(!navigator.getUserMedia) {
+          alert('Sorry, the browser you are using doesn\'t support getUserMedia');
+        }
+
+        var url = window.URL || window.webkitURL;
+        this.createObjectURL = url.createObjectURL;
       },
       setupRenderer: function () {
         this.renderer.autoClear = false;
@@ -36,15 +48,22 @@
         this.addLighting();
         this.loadTextures();
         this.setupMaterials();
+        this.setupCanvas();
         this.loadPhoneModel();
         this.orbitControls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.orbitControls.userPan = false;
       },
       setupCamera: function () {
-        this.camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 500);
+        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.set(0, 0, 50);
+
+        this.cubeCamera = new THREE.CubeCamera(1, 1000, 256); // parameters: near, far, resolution
+        this.cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+
+        this.scene.add(this.cubeCamera);
       },
       addLighting: function () {
+
         var angle = Math.PI / 2;
 
         this.lights = {
@@ -120,6 +139,8 @@
         this.textures.mapSDcard = THREE.ImageUtils.loadTexture('assets/images/textures/sdcard.jpg');
         this.textures.mapBattery = THREE.ImageUtils.loadTexture('assets/images/textures/battery.png');
 
+        this.textures.skyBox = THREE.ImageUtils.loadTexture('assets/images/background-image2.jpg');
+
         var urls = [
           'assets/images/cubemaps/environment/pos-x.png',
           'assets/images/cubemaps/environment/neg-x.png',
@@ -131,7 +152,6 @@
 
         this.textures.mapCube = THREE.ImageUtils.loadTextureCube(urls);
         this.textures.mapCube.format = THREE.RGBFormat;
-
       },
       setupMaterials: function () {
         this.materials = {};
@@ -206,16 +226,13 @@
           map: this.textures.mapCamera
         });
 
-        this.materials.screen = new THREE.MeshBasicMaterial({
-          map: this.textures.mapScreen
-        });
-
         this.materials.glass = new THREE.MeshLambertMaterial({
           color: 0xffffff,
-          opacity: 0.2,
+          opacity: 0.5,
           blending: THREE.AdditiveBlending,
           transparent: true,
-          envMap: this.textures.mapCube,
+          //envMap: this.textures.mapCube,
+          envMap: this.cubeCamera.renderTarget,
           depthWrite: false
         });
 
@@ -311,6 +328,73 @@
         this.materials.hidden = new THREE.MeshBasicMaterial({
           visible: false
         });
+
+        this.materials.reflective = new THREE.MeshBasicMaterial({
+          envMap: this.cubeCamera.renderTarget
+        });
+
+        this.materials.screen = new THREE.MeshLambertMaterial({
+          map: this.textures.mapScreen,
+        });
+      },
+      setupCanvas: function() {
+        this.video = $('<video id="video-player"></video>');
+        this.canvas = $('<canvas id="video-canvas"></canvas>');
+        this.canvas[0].width = 415;
+        this.canvas[0].height = 720;
+        this.canvasContext = this.canvas[0].getContext('2d');
+        $('.texture-wrapper').append(this.canvas).append(this.video);
+        navigator.getUserMedia({
+            video: true,
+            audio:false
+         },        
+         this.bindStream.bind(this),
+         this.streamError.bind(this)
+        );
+      },
+      bindStream : function(stream) {
+        this.stream = this.createObjectURL(stream);
+        this.video.attr('src', this.stream);
+        this.video[0].play();
+
+        this.textures = this.textures || {};
+        //this.textures.videoTexture = new THREE.Texture(this.canvas[0]);
+        this.textures.videoTexture = new THREE.Texture(this.video[0]);
+        this.textures.videoTexture.needsUpdate = true;
+        this.textures.videoTexture.minFilter = THREE.NearestFilter;
+
+        this.materials = this.materials || {};
+        
+        this.materials.videoScreen = new THREE.MeshLambertMaterial({
+          map: this.textures.videoTexture
+        });
+        this.materials.videoScreen.side = THREE.DoubleSide;
+
+        // if(this.videoScreenObj) {
+        //   this.videoScreenObj.material = this.materials.screen;
+        // } else {
+        //   this.checkVideoScreenObjInterval = setInterval(function(){
+        //     if(!this.videoScreenObj) {
+        //       return;
+        //     }
+
+        //     clearInterval(this.checkVideoScreenObjInterval);
+        //     this.videoScreenObj.material = this.materials.screen;
+
+        //   }.bind(this), 500);
+        // }
+        
+        this.faceVideoRectangle = new THREE.Mesh(
+          new THREE.PlaneGeometry(40, 30, 32),
+          this.materials.videoScreen
+        );
+
+        this.faceVideoRectangle.position.set(0, 0, 51);
+        this.faceVideoRectangle.rotateY(Math.PI);
+        this.scene.add(this.faceVideoRectangle);
+      },
+      streamError: function(error) {
+        console.log(error);
       },
       loadPhoneModel: function () {
         var OBJLoader = new THREE.OBJMTLLoader();
@@ -319,14 +403,32 @@
         }.bind(this));
       },
       createGeometries: function (object) {
-        this.object = object;
+        this.obj = object;
         console.group('Children');
-        this.object.traverse(function (child) {
+        this.obj.traverse(function (child) {
           //console.log(child.name, ':', child);
           this.createGeometry(child);
         }.bind(this));
         console.groupEnd('Children');
-        this.scene.add(this.object);
+        //this.obj.position.set(0, 0, 0);
+        this.scene.add(this.obj);
+
+        this.sphere = new THREE.Mesh(
+          new THREE.SphereGeometry(2, 30, 30),
+          new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            envMap: this.cubeCamera.renderTarget
+            //envMap: this.textures.mapCube
+          })
+        );
+
+        console.log(this.cubeCamera.renderTarget);
+        this.sphere.position.set(5, 0, 0);
+        //this.scene.add(this.sphere);
+
+        this.skyBox = new THREE.Mesh(new THREE.SphereGeometry( 500, 60, 40 ), new THREE.MeshBasicMaterial( { map: this.textures.skyBox } ));
+        this.skyBox.scale.x = -1;
+        this.scene.add(this.skyBox);
       },
       createGeometry: function (child) {
         if (!child.geometry || !child.geometry.faces || !child.geometry.faces.length) {
@@ -347,6 +449,7 @@
             child.visible = false;
             break;
           case 'phone_screen':
+            //this.videoScreenObj = child;
             child.material = this.materials.screen;
             break;
           case 'phone_block':
@@ -413,50 +516,30 @@
         }
       },
       bindEvents: function () {
-        // $(document).on('ready mousemove', function (event) {
-        //   this.setMousePosition(event);
-        // }.bind(this));
-
-        // this.mouseDown = false;
-
-        // $(document).on('mousedown', function(){
-        //   this.mouseDown = true;
-        // }.bind(this));
-
-        // $(document).on('mouseup', function(){
-        //   this.mouseDown = false;
-        // }.bind(this));
       },
-      // setMousePosition: function (event) {
-      //   this.updateX = event.clientX - (window.innerWidth / 2);
-      //   this.updateY = event.clientY - (window.innerHeight / 2);
-
-      //   this.XDirection = this.updateX > this.mouseX ? 1 : -1;
-      //   this.YDirection = this.updateY > this.mouseY ? 1 : -1;
-
-      //   this.XMagnitude = this.updateX - this.mouseX;
-      //   this.YMagnitude = this.updateY - this.mouseY;
-
-      //   this.mouseX = this.updateX;
-      //   this.mouseY = this.updateY;
-      // },
       animate: function () {
         requestAnimationFrame(this.animate.bind(this));
         this.render();
         this.orbitControls.update();
       },
       render: function () {
-        if (this.mouseX && this.mouseY) {
-
-          // if(this.mouseDown) {
-          //   this.object.rotateX(0.004 * this.YMagnitude);
-          //   this.object.rotateY(0.007 * this.XMagnitude);
-          // }
-
-          //this.camera.position.x += ( this.mouseX - this.camera.position.x ) * 1;
-          //this.camera.position.y += ( - this.mouseY - this.camera.position.y ) * 1;
+        if(this.textures && this.textures.videoTexture) {
+          //Source X Y width height, dest X Y W H
+          //Source: 975px x 720px
+          //Viewing rect: 415px x 720px
+          //Source X = ___ Y = 0 width = 415 height 720
+          this.canvasContext.drawImage(this.video[0], 182, 0, 276, 480, 0, 0, 415, 720);
+          this.textures.videoTexture.needsUpdate = true;
         }
-        //this.camera.lookAt( this.scene.position );
+
+        if(this.obj) {
+          //this.sphere.visible = false;
+          this.faceVideoRectangle.visible = true;
+          this.cubeCamera.updateCubeMap(this.renderer, this.scene);
+          this.faceVideoRectangle.visible = false;
+          //this.sphere.visible = true;
+        }
+
         this.renderer.render(this.scene, this.camera);
       }
     };
