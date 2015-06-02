@@ -27,6 +27,8 @@
         this.renderer.setClearColor(0x000000, 0);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.alpha = true;
+        this.renderer.gammaInput = true;
+        this.renderer.gammaOutput = true;
         $(el).append(this.renderer.domElement);
       },
       setupScene: function () {
@@ -43,19 +45,24 @@
         this.camera.position.set(0, 0, 50);
       },
       addLighting: function () {
+        var angle = Math.PI / 2;
+
         this.lights = {
           ambientLight: new THREE.AmbientLight(0x444444),
           directionalLight1: new THREE.DirectionalLight(0xffffff, 1),
           directionalLight2: new THREE.DirectionalLight(0xffffff, 1.5),
           directionalLight3: new THREE.DirectionalLight(0xffffff, 1.5),
+          spotLight: new THREE.SpotLight(0xffffff, 2, 1000, 0.5),
         };
+
+        this.lights.spotLight.position.set(5, 5, 20);
+        this.lights.spotLight.castShadow = true;
 
         var rotationMatrix = new THREE.Matrix4();
 
         var position1 = new THREE.Vector3(0, 0, 1);
         var position2 = new THREE.Vector3(-2, 0, -3);
         var position3 = new THREE.Vector3(1, 0, -3);
-        var angle = Math.PI / 2;
 
         var axis = new THREE.Vector3(1, 0, 0).normalize();
 
@@ -73,6 +80,7 @@
         this.scene.add(this.lights.directionalLight1);
         this.scene.add(this.lights.directionalLight2);
         this.scene.add(this.lights.directionalLight3);
+        this.scene.add(this.lights.spotLight);
       },
       loadTextures: function () {
         this.textures = {};
@@ -113,12 +121,12 @@
         this.textures.mapBattery = THREE.ImageUtils.loadTexture('assets/images/textures/battery.png');
 
         var urls = [
-          'assets/images/cubemaps/environment/pos-x.jpg',
-          'assets/images/cubemaps/environment/neg-x.jpg',
-          'assets/images/cubemaps/environment/pos-y.jpg',
-          'assets/images/cubemaps/environment/neg-y.jpg',
-          'assets/images/cubemaps/environment/pos-z.jpg',
-          'assets/images/cubemaps/environment/neg-z.jpg'
+          'assets/images/cubemaps/environment/pos-x.png',
+          'assets/images/cubemaps/environment/neg-x.png',
+          'assets/images/cubemaps/environment/pos-y.png',
+          'assets/images/cubemaps/environment/neg-y.png',
+          'assets/images/cubemaps/environment/pos-z.png',
+          'assets/images/cubemaps/environment/neg-z.png'
         ];
 
         this.textures.mapCube = THREE.ImageUtils.loadTextureCube(urls);
@@ -314,7 +322,7 @@
         this.object = object;
         console.group('Children');
         this.object.traverse(function (child) {
-          console.log(child.name, ':', child);
+          //console.log(child.name, ':', child);
           this.createGeometry(child);
         }.bind(this));
         console.groupEnd('Children');
@@ -328,38 +336,80 @@
         var parentName = child.parent.name.split('.')[0];
 
         switch (parentName) {
-        case 'body':
-
-          break;
-        case 'frontFace':
-          child.material = this.materials.frontFaceMaterial;
-          break;
-        case 'Stripes':
-          child.material = this.materials.stripesMaterial;
-          break;
-        case 'logo':
-          child.material = this.materials.shadeLogoMaterial;
-          child.castShadow = true;
-          break;
-        case 'screen':
-          child.material = this.materials.screenMaterial;
-          child.castShadow = true;
-          break;
-        case 'body':
-          child.material = this.materials.bodyMaterial;
-          child.castShadow = true;
-          break;
-        case 'glass':
-          child.material = this.materials.lensGlassMaterial;
-          child.castShadow = true;
-          break;
-        case 'buttons':
-          child.material = this.materials.buttonsMaterial;
-          break;
-        case 'chrome':
-          child.material = this.materials.chromeMaterial;
-          child.castShadow = true;
-          break;
+          case 'wire_pen':
+            child.material = this.materials.wire;
+            break;
+          case 'pen_cap':
+            child.material = this.materials.metalX;
+            break;
+          case 'sdcard':
+            child.material = this.materials.shade;
+            child.visible = false;
+            break;
+          case 'phone_screen':
+            child.material = this.materials.screen;
+            break;
+          case 'phone_block':
+            child.material = this.materials.block;
+            break;
+          case 'phone_case1':
+            child.material = this.materials.metalXSide;
+            break;
+          case 'phone_logo':
+            child.material = this.materials.graphics;
+            break;
+          case 'battery_body':
+            child.material = this.materials.shade;
+            child.visible = false;
+            break;
+          case 'pen_logo':
+            child.material = this.materials.shadeLogo;
+            child.visible = false;
+            break;
+          case 'phone_case2':
+            child.material = this.materials.metalSilverSide;
+            break;
+          case 'phone_button':
+            child.material = this.materials.button;
+            break;
+          case 'pen_handle':
+            child.material = this.materials.metalSilver;
+            break;
+          case 'phone_cover':
+            child.material = this.materials.cover;
+            break;
+          case 'battery_cond':
+            child.material = this.materials.wire;
+            child.visible = false;
+            break;
+          case 'wire_sdcard':
+            child.material = this.materials.wire;
+            child.visible = false;
+            break;
+          case 'phone_face':
+            child.material = this.materials.face;
+            break;
+          case 'phone_camera':
+            child.material = this.materials.camera;
+            break;
+          case 'pen_nip':
+            child.material = this.materials.shade;
+            child.visible = false;
+            break;
+          case 'wire_battery':
+            child.material = this.materials.wire;
+            child.visible = false;
+            break;
+          case 'pen_body':
+            child.material = this.materials.penWire;
+            break;
+          case 'phone_glass':
+            child.material = this.materials.glass;
+            break;
+          case 'battery_cap':
+            child.material = this.materials.shade;
+            child.visible = false;
+            break;
         }
       },
       bindEvents: function () {
