@@ -52,7 +52,7 @@
           directionalLight1: new THREE.DirectionalLight(0xffffff, 1),
           directionalLight2: new THREE.DirectionalLight(0xffffff, 1.5),
           directionalLight3: new THREE.DirectionalLight(0xffffff, 1.5),
-          spotLight: new THREE.SpotLight(0xffffff, 2, 1000, 0.5),
+          spotLight: new THREE.SpotLight(0xffffff, 2, 100, 0.5),
         };
 
         this.lights.spotLight.position.set(5, 5, 20);
