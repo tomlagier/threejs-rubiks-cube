@@ -228,7 +228,7 @@
 
         this.materials.glass = new THREE.MeshLambertMaterial({
           color: 0xffffff,
-          opacity: 0.5,
+          opacity: 0.8,
           blending: THREE.AdditiveBlending,
           transparent: true,
           //envMap: this.textures.mapCube,
@@ -358,8 +358,8 @@
         this.video[0].play();
 
         this.textures = this.textures || {};
-        //this.textures.videoTexture = new THREE.Texture(this.canvas[0]);
         this.textures.videoTexture = new THREE.Texture(this.video[0]);
+        this.textures.croppedVideoTexture = new THREE.Texture(this.canvas[0]);
         this.textures.videoTexture.needsUpdate = true;
         this.textures.videoTexture.minFilter = THREE.NearestFilter;
 
@@ -385,7 +385,7 @@
         // }
         
         this.faceVideoRectangle = new THREE.Mesh(
-          new THREE.PlaneGeometry(40, 30, 32),
+          new THREE.PlaneGeometry(60, 45, 32),
           this.materials.videoScreen
         );
 
@@ -532,7 +532,12 @@
           this.textures.videoTexture.needsUpdate = true;
         }
 
-        if(this.obj) {
+        if(this.faceVideoRectangle && this.camera) {
+          // this.faceVideoRectangle.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 1);
+          //this.faceVideoRectangle.rotation.set(this.camera.rotation);
+        }
+
+        if(this.obj && this.faceVideoRectangle) {
           //this.sphere.visible = false;
           this.faceVideoRectangle.visible = true;
           this.cubeCamera.updateCubeMap(this.renderer, this.scene);
