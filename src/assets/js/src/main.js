@@ -208,7 +208,7 @@
 
         this.materials.metalSilverSide = new THREE.MeshPhongMaterial({
           color: 0xefefef,
-          reflectivity: 0.8,
+          reflectivity: 0.5,
           specular: 0xffffff,
           envMap: this.textures.mapCube,
           transparent: true
@@ -363,28 +363,19 @@
         this.textures.videoTexture.needsUpdate = true;
         this.textures.videoTexture.minFilter = THREE.NearestFilter;
 
+        this.textures.radialGradient = THREE.ImageUtils.loadTexture('assets/images/textures/radial-gradient.jpg');
+
         this.materials = this.materials || {};
         
         this.materials.videoScreen = new THREE.MeshLambertMaterial({
-          map: this.textures.videoTexture
+          map: this.textures.videoTexture,
+          transparent: true,
+          side: THREE.DoubleSide,
+          //alphaMap: this.textures.radialGradient
         });
-        this.materials.videoScreen.side = THREE.DoubleSide;
-
-        // if(this.videoScreenObj) {
-        //   this.videoScreenObj.material = this.materials.screen;
-        // } else {
-        //   this.checkVideoScreenObjInterval = setInterval(function(){
-        //     if(!this.videoScreenObj) {
-        //       return;
-        //     }
-
-        //     clearInterval(this.checkVideoScreenObjInterval);
-        //     this.videoScreenObj.material = this.materials.screen;
-
-        //   }.bind(this), 500);
-        // }
         
         this.faceVideoRectangle = new THREE.Mesh(
+          //new THREE.SphereGeometry(50, 30, 30, 0, Math.PI*4, 0, Math.PI),
           new THREE.PlaneGeometry(60, 45, 32),
           this.materials.videoScreen
         );
@@ -516,6 +507,7 @@
         }
       },
       bindEvents: function () {
+        
       },
       animate: function () {
         requestAnimationFrame(this.animate.bind(this));
@@ -533,15 +525,15 @@
         }
 
         if(this.faceVideoRectangle && this.camera) {
-          // this.faceVideoRectangle.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 1);
+          //this.faceVideoRectangle.position.set(this.camera.position.x, this.camera.position.y, 50);
           //this.faceVideoRectangle.rotation.set(this.camera.rotation);
         }
 
         if(this.obj && this.faceVideoRectangle) {
           //this.sphere.visible = false;
-          this.faceVideoRectangle.visible = true;
+          //this.faceVideoRectangle.visible = true;
           this.cubeCamera.updateCubeMap(this.renderer, this.scene);
-          this.faceVideoRectangle.visible = false;
+          //this.faceVideoRectangle.visible = false;
           //this.sphere.visible = true;
         }
 
