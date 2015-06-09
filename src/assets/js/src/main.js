@@ -1,5 +1,5 @@
-/* globals THREE */
-(function (window, document, $, THREE, undefined) {
+/* globals _, THREE, TweenMax, TimelineMax */
+(function (window, document, $, _, THREE, TweenMax, TimelineMax, undefined) {
   'use strict';
   // place entire program inside of this closure
 
@@ -12,6 +12,9 @@
         alpha: true,
         clearAlpha: 0
       }),
+      mouse: {},
+      tweens: [],
+      isHovering: false,
       init: function () {
         this.setupPrefixes();
         this.setupRenderer();
@@ -56,6 +59,7 @@
       setupCamera: function () {
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         this.camera.position.set(0, 0, 50);
+        this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         this.cubeCamera = new THREE.CubeCamera(1, 1000, 256); // parameters: near, far, resolution
         this.cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
@@ -395,31 +399,33 @@
       },
       createGeometries: function (object) {
         this.obj = object;
-        console.group('Children');
+
+        this.penGroup = new THREE.Group();
+
         this.obj.traverse(function (child) {
-          //console.log(child.name, ':', child);
           this.createGeometry(child);
         }.bind(this));
-        console.groupEnd('Children');
-        //this.obj.position.set(0, 0, 0);
+
         this.scene.add(this.obj);
+        this.scene.add(this.penGroup);
 
-        this.sphere = new THREE.Mesh(
-          new THREE.SphereGeometry(2, 30, 30),
-          new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            envMap: this.cubeCamera.renderTarget
-            //envMap: this.textures.mapCube
-          })
-        );
+        // this.sphere = new THREE.Mesh(
+        //   new THREE.SphereGeometry(2, 30, 30),
+        //   new THREE.MeshBasicMaterial({
+        //     color: 0xffffff,
+        //     envMap: this.cubeCamera.renderTarget
+        //     //envMap: this.textures.mapCube
+        //   })
+        // );
 
-        console.log(this.cubeCamera.renderTarget);
-        this.sphere.position.set(5, 0, 0);
+        //this.sphere.position.set(5, 0, 0);
         //this.scene.add(this.sphere);
 
         this.skyBox = new THREE.Mesh(new THREE.SphereGeometry( 500, 60, 40 ), new THREE.MeshBasicMaterial( { map: this.textures.skyBox } ));
         this.skyBox.scale.x = -1;
-        this.scene.add(this.skyBox);
+        this.scene.add(this.skyBox); 
+
+        this.setupAnimations();
       },
       createGeometry: function (child) {
         if (!child.geometry || !child.geometry.faces || !child.geometry.faces.length) {
@@ -431,88 +437,186 @@
         switch (parentName) {
           case 'wire_pen':
             child.material = this.materials.wire;
+            child.name = 'WirePen';
+            this.penGroup.add(child);
             break;
           case 'pen_cap':
             child.material = this.materials.metalX;
+            child.name = 'PenCap';
+            this.penGroup.add(child);
             break;
           case 'sdcard':
             child.material = this.materials.shade;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'SDCard';
             break;
           case 'phone_screen':
-            //this.videoScreenObj = child;
             child.material = this.materials.screen;
+            child.name = 'PhoneScreen';
             break;
           case 'phone_block':
             child.material = this.materials.block;
+            child.name = 'PhoneBlock';
             break;
           case 'phone_case1':
             child.material = this.materials.metalXSide;
+            child.name = 'PhoneCase1';
             break;
           case 'phone_logo':
             child.material = this.materials.graphics;
+            child.name = 'PhoneLogo';
             break;
           case 'battery_body':
             child.material = this.materials.shade;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'BatteryBody';
             break;
           case 'pen_logo':
             child.material = this.materials.shadeLogo;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'PenLogo';
+            this.penGroup.add(child);
             break;
           case 'phone_case2':
             child.material = this.materials.metalSilverSide;
+            child.name = 'PhoneCase2';
             break;
           case 'phone_button':
             child.material = this.materials.button;
+            child.name = 'PhoneButton';
             break;
           case 'pen_handle':
             child.material = this.materials.metalSilver;
+            child.name = 'PenHandle';
+            this.penGroup.add(child);
             break;
           case 'phone_cover':
             child.material = this.materials.cover;
+            child.name = 'PhoneCover';
             break;
           case 'battery_cond':
             child.material = this.materials.wire;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'BatteryCond';
             break;
           case 'wire_sdcard':
             child.material = this.materials.wire;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'WireSDCard';
             break;
           case 'phone_face':
             child.material = this.materials.face;
+            child.name = 'PhoneFace';
             break;
           case 'phone_camera':
             child.material = this.materials.camera;
+            child.name = 'PhoneCamera';
             break;
           case 'pen_nip':
             child.material = this.materials.shade;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'PenNip';
+            this.penGroup.add(child);
             break;
           case 'wire_battery':
             child.material = this.materials.wire;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'WireBattery';
             break;
           case 'pen_body':
             child.material = this.materials.penWire;
+            child.name = 'PenBody';
+            this.penGroup.add(child);
             break;
           case 'phone_glass':
             child.material = this.materials.glass;
+            child.name = 'PhoneGlass';
             break;
           case 'battery_cap':
             child.material = this.materials.shade;
-            child.visible = false;
+            //child.visible = false;
+            child.name = 'BatteryCap';
             break;
         }
       },
       bindEvents: function () {
-        
+        $(document).on('ready mousemove', function (event) {
+          this.setMousePosition(event);
+        }.bind(this));
+
+        this.mouseDown = false;
+
+        $(document).on('mousedown', function(){
+          this.mouseDown = true;
+        }.bind(this));
+
+        $(document).on('mouseup', function(){
+          this.mouseDown = false;
+        }.bind(this));
+      },
+      setMousePosition: function (event) {
+        // this.updateX = event.clientX - (window.innerWidth / 2);
+        // this.updateY = event.clientY - (window.innerHeight / 2);
+
+        // this.XDirection = this.updateX > this.mouseX ? 1 : -1;
+        // this.YDirection = this.updateY > this.mouseY ? 1 : -1;
+
+        // this.XMagnitude = this.updateX - this.mouseX;
+        // this.YMagnitude = this.updateY - this.mouseY;
+
+        // this.mouseX = this.updateX;
+        // this.mouseY = this.updateY;
+
+        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      },
+      getObjectByName: function(name) {
+        var result;
+        _.forEach(this.obj.children, function(child){
+          if(child.children.length > 0) {
+            result = _.find(child.children, function(innerChild){
+              return innerChild.name === name;
+            });
+            //Break out once we have a result
+            return !result;
+          }
+        });
+        return result;
+      },
+      setupAnimations: function() {
+        this.penHover = new TimelineMax({});
+        this.penHover.add(TweenMax.to(this.penGroup.position, 1, {
+          y: '-=10'
+        }));
+      },
+      waitUntilReady: function(test, callback, interval) {
+        if(test()){
+          callback();
+        } else {
+          setTimeout(function(){
+            this.waitUntilReady(test, callback, interval);
+          }.bind(this), interval);
+        }
       },
       animate: function () {
         requestAnimationFrame(this.animate.bind(this));
         this.render();
         this.orbitControls.update();
+      },
+      calculateIntersections: function(){
+        
+        var raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(this.mouse, this.camera);
+
+        // create an array containing all objects in the scene with which the ray intersects
+        if(this.obj){
+          var intersects = raycaster.intersectObjects( this.obj.children, true );
+          if(intersects && !this.isHovering){
+            this.trigger('hoverIn');
+          } else if(!intersects && this.isHovering) {
+            this.trigger('hoverOut');
+          }
+        }
       },
       render: function () {
         if(this.textures && this.textures.videoTexture) {
@@ -531,11 +635,13 @@
 
         if(this.obj && this.faceVideoRectangle) {
           //this.sphere.visible = false;
-          //this.faceVideoRectangle.visible = true;
+          this.faceVideoRectangle.visible = true;
           this.cubeCamera.updateCubeMap(this.renderer, this.scene);
-          //this.faceVideoRectangle.visible = false;
+          this.faceVideoRectangle.visible = false;
           //this.sphere.visible = true;
         }
+
+        this.calculateIntersections();
 
         this.renderer.render(this.scene, this.camera);
       }
@@ -546,4 +652,4 @@
   window.threeTest = threeTest;
   threeTest.init();
 
-})(window, document, jQuery, THREE);
+})(window, document, jQuery, _, THREE, TweenMax, TimelineMax);
