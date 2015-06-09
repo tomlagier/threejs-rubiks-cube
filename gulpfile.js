@@ -1,148 +1,228 @@
-var _ = require('lodash'),
-  gulp = require('gulp'),
-  filter = require('gulp-filter'),
-  changed = require('gulp-changed'),
-  merge = require('merge-stream'),
-  del = require('del'),
-  gutil = require('gulp-util'),
-  gulpif = require('gulp-if'),
-  sass = require('gulp-sass'),
-  scsslint = require('gulp-scss-lint'),
-  spritesmith = require('gulp.spritesmith'),
-  concat = require('gulp-concat'),
-  uglify = require('gulp-uglify'),
-  jshint = require('gulp-jshint'),
-  stylish = require('jshint-stylish'),
-  sourcemaps = require('gulp-sourcemaps'),
-  livereload = require('gulp-livereload'),
-  injectReload = require('gulp-inject-reload'),
-  runSequence = require('run-sequence'),
-  notify = require('gulp-notify');
+/* jshint node:true */
+'use strict';
 
-var scssSpriteDir = './.tmp-gulp-scss-sprites';
+////// PACKAGES //////
+// Gulp plugins
+var gulp = require('gulp'),
+    //gutil = require('gulp-util'),
+    gulpif = require('gulp-if'),
+    postCSS = require('gulp-postcss'),
+    nano = require('gulp-cssnano'),
+    sourcemaps = require('gulp-sourcemaps'),
+    _ = require('lodash'),
+    runSequence = require('run-sequence'),
+    changed = require('gulp-changed'),
+    del = require('del'),
+    //rename = require('gulp-rename'),
+    filter = require('gulp-filter'),
+    debug = require('gulp-debug'),
+    concat = require('gulp-concat'),
+    path = require('path');
 
-var conf = {
-  "build": "./target",
-  "src": "./src",
-  "source": {
-    "prod": ["**", "!assets/scss{,/**}", "!assets/js{,/**}"],
-    "dev": ["**"]
-  },
-  "sprites": {
-    "icons": "<%= src %>/assets/images/sprites/icons/*.png"
-  },
-  "js": {
-    "vendor": ["<%= src %>/assets/js/libs/three.min.js", "<%= src %>/assets/js/libs/jquery-1.11.1.js", "<%= src %>/assets/js/libs/*.js"],
-    "app": "<%= src %>/assets/js/src/*.js"
-  },
-  "scss": ["<%= src %>/assets/scss/**/*.scss"]
-};
+// PostCSS transforms
+// Only use the ones you'll actually use!
+var colorFunction = require('postcss-color-function'),
+    colorGray = require('postcss-color-gray'),
+    colorHexAlpha = require('postcss-color-hex-alpha'),
+    customMedia = require('postcss-custom-media'),
+    customSelectors = require('postcss-custom-selectors'),
+    mediaMinMax = require('postcss-media-minmax'),
+    selectorNot = require('postcss-selector-not'),
+    imageSet = require('postcss-image-set'),
+    vmin = require('postcss-vmin'),
+    willChange = require('postcss-will-change'),
+    colorAlpha = require('postcss-color-alpha'),
+    colorHcl = require('postcss-color-hcl'),
+    pcssEach = require('postcss-each'),
+    pcssFor = require('postcss-for'),
+    pcssCond = require('postcss-conditionals'),
+    mixins = require('postcss-mixins'),
+    grid = require('postcss-grid'),
+    simpleVariables = require('postcss-simple-vars'),
+    quantityQueries = require('postcss-quantity-queries'),
+    simpleExtend = require('postcss-simple-extend'),
+    verticalRhythm = require('postcss-vertical-rhythm'),
+    at2x = require('postcss-at2x'),
+    pcssImport = require('postcss-import'),
+    sprites = require('postcss-sprites'),
+    pcssUrl = require('postcss-url'),
+    easings = require('postcss-easings'),
+    generatePreset = require('postcss-generate-preset'),
+    classPrefix = require('postcss-class-prefix'),
+    nested = require('postcss-nested'),
+    pixrem = require('pixrem'),
+    mqpacker = require('css-mqpacker'),
+    csswring = require('csswring'),
+    cssgrace = require('cssgrace'),
+    doiuse = require('doiuse'),
+    autoprefixer = require('autoprefixer-core');
 
-//allow our conf to be templateized.
-conf.file = './gulpfile.js';
-conf = JSON.parse(gutil.template(JSON.stringify(conf), conf));
-delete conf.file;
+//Webpack and loaders
+var webpack = require('gulp-webpack');
 
-var isProd = true;
+//JS
+var uglify = require('gulp-uglify');
+var babel = require('gulp-babel');
+
+////// CONFIG //////
+var config = require('./config.json');
+config = JSON.parse(_.template(JSON.stringify(config))(config));
+
+var isDev = false;
 gulp.task('setdev', function () {
-  isProd = false;
+  isDev = true;
 });
 
-gulp.task('clean', function (cb) {
-  del([conf.build, scssSpriteDir], cb);
+////// RESET //////
+gulp.task('clean', function(callback) {
+  del([config.build], callback);
 });
 
-gulp.task('copy', function () {
-  var source = isProd ? conf.source.prod : conf.source.dev;
-  var onlyHtml = filter(['*.html']);
+////// STATIC //////
+gulp.task('copy', function(){
+  var source = isDev ? config.source.dev : config.source.prod;
+
   return gulp.src(source, {
-      cwd: conf.src
-    })
-    .pipe(changed(conf.build))
-    .pipe(onlyHtml)
-    .pipe(gulpif(!isProd, injectReload()))
-    .pipe(onlyHtml.restore())
-    .pipe(gulp.dest(conf.build))
-    .pipe(livereload());
+    cwd : config.src
+  })
+  .pipe(changed(config.build))
+  .pipe(gulp.dest(config.build));
 });
 
-gulp.task('sprites', function () {
-  var spriteData = _.map(conf.sprites, function (source, name) {
-    return gulp.src(source).pipe(spritesmith({
-      imgName: 'assets/images/sprites/' + name + '.png',
-      cssName: name + '.scss',
-      cssTemplate: '.compass-sprite.mustache'
-    }));
-  });
-  var streams = [];
-  _.each(spriteData, function (stream) {
-    var img = stream.img.pipe(gulp.dest(conf.build));
-    var css = stream.css.pipe(gulp.dest(scssSpriteDir));
-    streams.push(img, css);
-  });
+////// CSS //////
+//Pass individual plugin options here. Remove plugin from default list and add to processor list if you need environment-specific config
+config.css.transforms = [
+  pcssImport ({
+    path: [config.src + '/assets/css/src']
+  }),
+  mixins,
+  simpleExtend, 
+  pcssEach, 
+  pcssFor, 
+  pcssCond, 
+  nested,
+  customSelectors, 
+  customMedia, 
+  simpleVariables, 
+  selectorNot, 
+  colorFunction, 
+  pcssUrl, 
+  autoprefixer({ browsers: ['ie >= 9', '> 1%'] }),
+  colorGray, 
+  colorHexAlpha, 
+  mediaMinMax, 
+  imageSet, 
+  vmin, 
+  willChange, 
+  colorAlpha, 
+  colorHcl, 
+  grid, 
+  quantityQueries, 
+  //verticalRhythm, 
+  at2x, 
+  sprites,
+  easings, 
+  pixrem, 
+  //generatePreset, 
+  //classPrefix, 
+  cssgrace, 
+];
 
-  return merge.apply(null, streams).pipe(livereload());
+gulp.task('css', [], function(){
+  var dest = path.join(config.build, 'assets/css');
+
+  //Environment specific processor config
+  var processors = {
+    dev : _.union(config.css.transforms, [
+      //Can cause errors
+      doiuse({
+        browsers: ['ie >= 9', '> 1%'],
+          onFeatureUsage: function(usageInfo) {
+            console.log(usageInfo.message);
+          }
+      }),
+    ]),
+    prod : _.union(config.css.transforms, [
+      mqpacker
+    ])
+  };
+
+  var stripPartials = filter(['*', '!_*.css']);
+
+  gulp.src(config.css.src)
+    .pipe(stripPartials)
+    .pipe(debug())
+    .pipe(gulpif(isDev, sourcemaps.init()))
+    .pipe(gulpif(isDev, postCSS(processors.dev), postCSS(processors.prod)))
+    .pipe(gulpif(!isDev, nano()))
+    .pipe(gulpif(isDev, sourcemaps.write()))
+    .pipe(gulp.dest(dest));
 });
 
-gulp.task('css', ['sprites'], function () {
-  var dest = conf.build + '/assets/css/';
+gulp.task('css-lib', [], function(){
+  var dest = path.join(config.build, 'assets/css');
 
-  return gulp.src(conf.scss)
-    .pipe(scsslint())
-    .pipe(gulpif(!isProd, sourcemaps.init()))
-    .pipe(sass({
-      outputStyle: isProd ? 'compressed' : 'expanded',
-      includePaths: [require('node-bourbon').includePaths, scssSpriteDir],
-      onError: notify.onError(function (error) {
-        return "SASS ERROR: " + error.message;
-      })
-    }))
-    .pipe(gulpif(!isProd, sourcemaps.write()))
-    .pipe(gulp.dest(dest))
-    .pipe(livereload());
+  gulp.src(config.css.lib)
+    .pipe(debug())
+    .pipe(concat('libs.css'))
+    .pipe(gulp.dest(dest));
 });
 
-gulp.task('scripts', function () {
-  var dest = conf.build + '/assets/js/';
+////// JS //////
+gulp.task('js', [], function(){
+  var dest = path.join(config.build, 'assets/js');
 
-  var vendor = gulp.src(conf.js.vendor)
-    .pipe(changed(dest))
-    .pipe(gulpif(!isProd, sourcemaps.init()))
+  gulp.src(config.js.src)
+    .pipe(debug())
+    .pipe(babel())
+    .pipe(gulp.dest(dest));
+});
+
+gulp.task('js-lib', [], function(){
+  var dest = path.join(config.build, 'assets/js');
+
+  gulp.src(config.js.lib)
+    .pipe(gulpif(isDev, sourcemaps.init()))
     .pipe(concat('vendor.js'))
-    .pipe(gulpif(isProd, uglify()))
-    .pipe(gulpif(!isProd, sourcemaps.write()))
+    .pipe(gulpif(!isDev, uglify()))
+    .pipe(gulpif(isDev, sourcemaps.write()))
     .pipe(gulp.dest(dest));
+});
 
-  var app = gulp.src(conf.js.app)
-    .pipe(changed(dest))
-    .pipe(gulpif(!isProd, sourcemaps.init()))
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'))
-    .on('error', notify.onError({ message: 'JS hint fail'}))
-    .pipe(concat('app.js'))
-    .pipe(gulpif(isProd, uglify()))
-    .pipe(gulpif(!isProd, sourcemaps.write()))
+////// BUNDLING //////
+_.extend(config.webpack, {
+  loaders: [
+    {
+      test: /\.js$/,
+      loader: 'imports!script'
+    }
+  ],
+  output : {
+    filename : 'app.js'
+  }
+});
+
+gulp.task('webpack', [], function(){
+  var dest = path.join(config.build, 'assets/js');
+
+  gulp.src(config.js.dest)
+    .pipe(webpack(config.webpack))
     .pipe(gulp.dest(dest));
-
-
-  return merge(vendor, app).pipe(livereload());
 });
 
-gulp.task('watch', function () {
-  livereload.listen();
-  gulp.watch(conf.js.app, ['scripts']);
-  /*gulp.watch(_.map(conf.sprites, function (src) {
-  	return src;
-  }), ['sprites']);*/
-  gulp.watch(conf.scss, ['css']);
-  gulp.watch("./src/**/*.{html,png,jpeg,jpg}", ['copy']);
+////// BUILDING //////
+gulp.task('build', function(callback){
+  runSequence('clean', ['copy', 'css', 'css-lib', 'js', 'js-lib'], 'webpack', callback);
 });
 
-gulp.task('build', function (callback) {
-  runSequence('clean', ['copy', 'css', 'scripts'], callback);
+/////// WATCHING //////
+gulp.task('watch', function(){
+  gulp.watch(config.watch.app, ['webpack']);
+  gulp.watch(config.watch.cssLib, ['css-lib']);
+  gulp.watch(config.watch.jsLib, ['js-lib']);
+  gulp.watch(config.watch.staticFiles, ['copy']);
 });
 
-
+////// START //////
 gulp.task('dev', ['setdev', 'build', 'watch']);
 gulp.task('default', ['build']);

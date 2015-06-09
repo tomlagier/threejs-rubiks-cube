@@ -1,0 +1,54 @@
+{
+  "build" : "./target",
+  "src" : "./src",
+  "temp" : "./temp",
+  "js" : {
+    "src" : ["<%= src %>/assets/js/src/**"],
+    "dest" : ["<%= build %>/assets/js/main.js"],
+    "lib" : ["<%= src %>/assets/js/lib/first/*.js", "<%= src %>/assets/js/lib/**/*.js"]
+  },
+  "source" : {
+    "dev" : ["**", "!assets/css{,/**}", "!assets/js{,/**}"],
+    "prod" : ["**", "!assets/css{,/**}", "!assets/js{,/**}"]
+  },
+  "css" : {
+    "src" : ["<%= src %>/assets/css/src/**/*.css"],
+    "lib" : ["<%= src %>/assets/css/lib/**/*.css"]
+  },
+  "watch" : {
+    "staticFiles" : [
+      "<%= src %>/assets/images/**", 
+      "<%= src %>/assets/json/**", 
+      "<%= src %>/assets/html/**",
+      "<%= src %>/assets/fonts/**",
+      "<%= src %>/assets/models/**",
+      "<%= src %>/assets/textures/**"
+    ],
+    "app" : [
+      "<%= src %>/assets/js/src/**",
+      "<%= src %>/assets/css/src/**",
+      "<%= src %>/assets/images/**",
+      "<%= src %>/assets/html/**",
+      "<%= src %>/assets/json/**",
+      "<%= src %>/assets/templates/**"
+    ], 
+    "cssLib" : [
+      "<%= src %>/assets/textures/css/lib"
+    ],
+    "jsLib" : [
+      "<%= src %>/assets/textures/js/lib"
+    ]
+  },
+  "webpack" : {
+    "webpackOptions" : {
+      "debug": true
+    },
+    "webpackConfig" : {
+      "progress": true
+    }
+  },
+  "defaults" : {
+    "js" : {},
+    "css" : {}
+  }
+}
