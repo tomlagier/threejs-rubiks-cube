@@ -3,8 +3,7 @@
   "src" : "./src",
   "temp" : "./temp",
   "js" : {
-    "src" : ["<%= src %>/assets/js/src/**"],
-    "dest" : ["<%= build %>/assets/js/main.js"],
+    "src" : ["<%= src %>/assets/js/src/main.es6"],
     "lib" : ["<%= src %>/assets/js/lib/first/*.js", "<%= src %>/assets/js/lib/**/*.js"]
   },
   "source" : {
@@ -17,8 +16,8 @@
   },
   "watch" : {
     "staticFiles" : [
-      "<%= src %>/assets/images/**", 
-      "<%= src %>/assets/json/**", 
+      "<%= src %>/assets/images/**",
+      "<%= src %>/assets/json/**",
       "<%= src %>/assets/html/**",
       "<%= src %>/assets/fonts/**",
       "<%= src %>/assets/models/**",
@@ -31,7 +30,7 @@
       "<%= src %>/assets/html/**",
       "<%= src %>/assets/json/**",
       "<%= src %>/assets/templates/**"
-    ], 
+    ],
     "cssLib" : [
       "<%= src %>/assets/textures/css/lib"
     ],
@@ -40,12 +39,8 @@
     ]
   },
   "webpack" : {
-    "webpackOptions" : {
-      "debug": true
-    },
-    "webpackConfig" : {
-      "progress": true
-    }
+    "debug": true,
+    "progress": true
   },
   "defaults" : {
     "js" : {},

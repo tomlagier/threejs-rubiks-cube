@@ -23,9 +23,9 @@ module.exports = function (el) {
       this.animate();
     },
     setupPrefixes: function(){
-      navigator.getUserMedia = (navigator.getUserMedia || 
-        navigator.webkitGetUserMedia || 
-        navigator.mozGetUserMedia || 
+      navigator.getUserMedia = (navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
         navigator.msGetUserMedia);
       if(!navigator.getUserMedia) {
         alert('Sorry, the browser you are using doesn\'t support getUserMedia');
@@ -351,7 +351,7 @@ module.exports = function (el) {
       navigator.getUserMedia({
           video: true,
           audio:false
-       },        
+       },
        this.bindStream.bind(this),
        this.streamError.bind(this)
       );
@@ -370,14 +370,14 @@ module.exports = function (el) {
       this.textures.radialGradient = THREE.ImageUtils.loadTexture('assets/images/textures/radial-gradient.jpg');
 
       this.materials = this.materials || {};
-      
+
       this.materials.videoScreen = new THREE.MeshLambertMaterial({
         map: this.textures.videoTexture,
         transparent: true,
         side: THREE.DoubleSide,
         //alphaMap: this.textures.radialGradient
       });
-      
+
       this.faceVideoRectangle = new THREE.Mesh(
         //new THREE.SphereGeometry(50, 30, 30, 0, Math.PI*4, 0, Math.PI),
         new THREE.PlaneGeometry(60, 45, 32),
@@ -423,7 +423,7 @@ module.exports = function (el) {
 
       this.skyBox = new THREE.Mesh(new THREE.SphereGeometry( 500, 60, 40 ), new THREE.MeshBasicMaterial( { map: this.textures.skyBox } ));
       this.skyBox.scale.x = -1;
-      this.scene.add(this.skyBox); 
+      this.scene.add(this.skyBox);
 
       this.setupAnimations();
     },
@@ -568,7 +568,7 @@ module.exports = function (el) {
       // this.mouseY = this.updateY;
 
       this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-      this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
     },
     getObjectByName: function(name) {
       var result;
@@ -604,7 +604,7 @@ module.exports = function (el) {
       this.orbitControls.update();
     },
     calculateIntersections: function(){
-      
+
       var raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(this.mouse, this.camera);
 
