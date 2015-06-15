@@ -4,13 +4,13 @@
 
 /* global THREE */
 
-class ThreeControls extends THREE.OrbitControls {
+class ThreeControls {
   constructor(camera, domElement) {
-    super(camera, domElement);
-    console.log(this);
+    this.controller = new THREE.OrbitControls(...arguments);
   }
 
-  update() {
+  update(){
+    this.controller.update();
   }
 }
 

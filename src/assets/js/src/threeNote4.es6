@@ -4,7 +4,8 @@
 
 /* global THREE */
 let ThreeGeometryFile = require('./threeGeometryFile.es6'),
-    ThreeHub = require('./threeHub.es6');
+    ThreeHub = require('./threeHub.es6'),
+    ThreeEvents = require('./threeEvents.es6');
 
 class ThreeNote4 extends ThreeGeometryFile {
   constructor() {
@@ -21,6 +22,8 @@ class ThreeNote4 extends ThreeGeometryFile {
       sdCard: new THREE.Group(),
       body: new THREE.Group()
     };
+
+    ThreeEvents.createAll(this.parts);
   }
 
   /**
@@ -47,7 +50,7 @@ class ThreeNote4 extends ThreeGeometryFile {
    * @param  THREE.Mesh object -- The mesh to modify and assign to a group
    */
   createGeometry(object) {
-    var parentName = object.parent.name.split('.')[0];
+    const parentName = object.parent.name.split('.')[0];
 
     switch (parentName) {
 

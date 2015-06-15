@@ -12,7 +12,8 @@ class ThreeRenderer extends THREE.WebGLRenderer {
     sortObjects: false,
     alpha: true,
     gammaInput: true,
-    gammaOutput: true
+    gammaOutput: true,
+    antialias: true
   }) {
     super();
 

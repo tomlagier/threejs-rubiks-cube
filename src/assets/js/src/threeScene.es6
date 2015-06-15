@@ -37,11 +37,12 @@ class ThreeScene extends THREE.Scene {
     this.textures.setup();
     this.materials.setup();
     this.geometries.setup();
+
     this.controls = new ThreeControls(this.cameras.main, this.renderer.domElement);
   }
 
   addAll(items) {
-    _.map(items, item => {
+    _.each(items, item => {
       super.add(item);
     });
   }
