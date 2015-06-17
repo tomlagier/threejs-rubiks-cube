@@ -12,11 +12,14 @@ let ThreeRenderer = require('./threeRenderer.es6'),
     ThreeMaterials = require('./threeMaterials.es6'),
     ThreeGeometries = require('./threeGeometries.es6'),
     ThreeControls = require('./threeControls.es6'),
+    ThreeMouse = require('./threeMouse.es6'),
+    ThreeActions = require('./threeActions.es6'),
     ThreeHub = require('./threeHub.es6');
 
 class ThreeScene extends THREE.Scene {
   constructor() {
     super();
+    ThreeHub.scene = this;
 
     _.extend(this, {
       cameras: new ThreeCameras(),
@@ -24,10 +27,10 @@ class ThreeScene extends THREE.Scene {
       lights: new ThreeLights(),
       textures: new ThreeTextures(),
       materials: new ThreeMaterials(),
-      geometries: new ThreeGeometries()
+      mouse: new ThreeMouse(),
+      geometries: new ThreeGeometries(),
+      actions: new ThreeActions()
     });
-
-    ThreeHub.scene = this;
   }
 
   setup() {
@@ -39,6 +42,8 @@ class ThreeScene extends THREE.Scene {
     this.geometries.setup();
 
     this.controls = new ThreeControls(this.cameras.main, this.renderer.domElement);
+    this.mouse.setup(this.cameras.main);
+    this.actions.setup();
   }
 
   addAll(items) {

@@ -2,28 +2,32 @@
  * Child class for Note 4 geometry parsing duties
  */
 
-/* global THREE */
 let ThreeGeometryFile = require('./threeGeometryFile.es6'),
-    ThreeHub = require('./threeHub.es6'),
-    ThreeEvents = require('./threeEvents.es6');
+    ThreeGroup = require('./threeGroup.es6'),
+    ThreeHub = require('./threeHub.es6');
 
-class ThreeNote4 extends ThreeGeometryFile {
+export class ThreeNote4 extends ThreeGeometryFile {
   constructor() {
     super();
     this.url = ['assets/models/note4-2.obj', 'assets/models/note4.mtl'];
     this.createGroups();
-    this.load(this.createGeometries.bind(this));
+    this.load();
   }
 
+  onLoad(object) {
+    this.createGeometries(object);
+  }
+
+  /**
+   * Create groups for each of the parts of the object
+   */
   createGroups() {
     this.parts = {
-      pen: new THREE.Group(),
-      battery: new THREE.Group(),
-      sdCard: new THREE.Group(),
-      body: new THREE.Group()
+      pen: new ThreeN4PenGroup({name: 'pen'}),
+      battery: new ThreeGroup({name: 'battery'}),
+      sdCard: new ThreeGroup({name: 'sdCard'}),
+      body: new ThreeGroup({name: 'body'})
     };
-
-    ThreeEvents.createAll(this.parts);
   }
 
   /**
@@ -174,5 +178,3 @@ class ThreeNote4 extends ThreeGeometryFile {
     }
   }
 }
-
-module.exports = ThreeNote4;

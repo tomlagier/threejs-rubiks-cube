@@ -1,11 +1,13 @@
 {
   "parser": "babel-eslint",
-  "env" : {
-    "browser" : true,
-    "node" : true
+  "env": {
+    "browser": true,
+    "node": true
   },
   "rules": {
     "strict": 0,
-    "quotes" : [1, "single", "avoid-escape"]
+    "quotes": [1, "single", "avoid-escape"],
+    "complexity": [1, 3],
+    "max-depth": [1, 4]
   }
 }

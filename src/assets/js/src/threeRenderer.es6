@@ -7,15 +7,17 @@ let ThreeHub = require('./threeHub.es6');
 
 class ThreeRenderer extends THREE.WebGLRenderer {
   constructor(options = {
+    antialias: true,
     autoClear: false,
     shadowMapEnabled: true,
     sortObjects: false,
     alpha: true,
     gammaInput: true,
     gammaOutput: true,
-    antialias: true
+    precision: 'highp',
+    clearAlpha: 0
   }) {
-    super();
+    super(options);
 
     this.setSize(window.innerWidth, window.innerHeight);
     this.setClearColor(0x000000, 0);

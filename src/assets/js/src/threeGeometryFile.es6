@@ -9,7 +9,7 @@ class ThreeGeometryFile {
     this.loader = new ThreeGeometryLoader();
   }
 
-  load(callback = () => {}, options = {}) {
+  load(callback = this.onLoad.bind(this), options = {}) {
     this.loader.load(this.url, callback, options);
   }
 }

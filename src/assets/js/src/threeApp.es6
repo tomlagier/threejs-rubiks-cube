@@ -23,7 +23,8 @@ class ThreeApp {
 
     //Global config
     _.extend(ThreeHub, {
-      $el: $(el)
+      $el: $(el),
+      el: $(el)[0]
     });
 
     this.setupPrefixes();

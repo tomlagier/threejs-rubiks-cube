@@ -3,12 +3,19 @@
  */
 
 /* global _ */
+
+class ThreeEventHub {
+  constructor() {}
+}
+
 let eventEmitter = require('event-emitter');
-let eventHub = eventEmitter({});
+let eventHub = eventEmitter(new ThreeEventHub());
 
 module.exports = {
   hub: eventHub,
-  create: eventEmitter,
+  create(obj) {
+    eventEmitter(obj);
+  },
   createAll(targets){
      _.each(targets, target => this.create(target));
   }
