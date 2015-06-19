@@ -5,18 +5,19 @@
 
 /* global _, THREE */
 
-let ThreeRenderer = require('./threeRenderer.es6'),
-    ThreeCameras = require('./threeCameras.es6'),
-    ThreeLights = require('./threeLights.es6'),
-    ThreeTextures = require('./threeTextures.es6'),
-    ThreeMaterials = require('./threeMaterials.es6'),
-    ThreeGeometries = require('./threeGeometries.es6'),
-    ThreeControls = require('./threeControls.es6'),
-    ThreeMouse = require('./threeMouse.es6'),
-    ThreeActions = require('./threeActions.es6'),
-    ThreeHub = require('./threeHub.es6');
+import ThreeRenderer from './threeRenderer.es6';
+import ThreeCameras from './threeCameras.es6';
+import ThreeLights from './threeLights.es6';
+import ThreeTextures from './threeTextures.es6';
+import ThreeMaterials from './threeMaterials.es6';
+import ThreeGeometries from './threeGeometries.es6';
+import ThreeControls from './threeControls.es6';
+import ThreeMouse from './threeMouse.es6';
+import ThreeWebcam from './threeWebcam.es6';
+import ThreeActions from './threeActions.es6';
+import ThreeHub from './threeHub.es6';
 
-class ThreeScene extends THREE.Scene {
+export default class ThreeScene extends THREE.Scene {
   constructor() {
     super();
     ThreeHub.scene = this;
@@ -29,6 +30,7 @@ class ThreeScene extends THREE.Scene {
       materials: new ThreeMaterials(),
       mouse: new ThreeMouse(),
       geometries: new ThreeGeometries(),
+      webcam: new ThreeWebcam(),
       actions: new ThreeActions()
     });
   }
@@ -42,6 +44,8 @@ class ThreeScene extends THREE.Scene {
     this.geometries.setup();
 
     this.controls = new ThreeControls(this.cameras.main, this.renderer.domElement);
+    this.renderer.addRenderCallback('controls', this.controls.update.bind(this.controls));
+
     this.mouse.setup(this.cameras.main);
     this.actions.setup();
   }
@@ -53,11 +57,11 @@ class ThreeScene extends THREE.Scene {
   }
 
   startRendering() {
-    this.animate();
+    this.runRender();
   }
 
-  animate() {
-    requestAnimationFrame(this.animate.bind(this));
+  runRender() {
+    requestAnimationFrame(this.runRender.bind(this));
     this.render();
   }
 
@@ -65,9 +69,6 @@ class ThreeScene extends THREE.Scene {
    * Per-frame execution
    */
   render() {
-    this.controls.update();
-    this.renderer.render(this, this.cameras.main);
+    this.renderer.renderFrame(this, this.cameras.main);
   }
 }
-
-module.exports = ThreeScene;

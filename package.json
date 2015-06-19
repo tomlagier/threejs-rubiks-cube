@@ -11,6 +11,7 @@
     "del": "^1.2.0",
     "doiuse": "^1.0.1",
     "es6-class-mixin": "^1.0.2",
+    "es6-mixins": "^1.0.2",
     "event-emitter": "^0.3.3",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",

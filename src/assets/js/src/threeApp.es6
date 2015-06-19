@@ -4,11 +4,11 @@
 
 /* global $, _ */
 
-let ThreeScene = require('./threeScene.es6'),
-    ThreeHub = require('./threeHub.es6');
-    //ThreeEvents = require('./threeEvents.es6');
+import ThreeScene from './threeScene.es6';
+import ThreeHub from './threeHub.es6';
+//import ThreeEvents from './threeEvents.es6';
 
-class ThreeApp {
+export default class ThreeApp {
   constructor(options) {
     let el;
 
@@ -48,5 +48,3 @@ class ThreeApp {
     this.scene.startRendering();
   }
 }
-
-module.exports = ThreeApp;

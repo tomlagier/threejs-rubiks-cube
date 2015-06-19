@@ -4,19 +4,20 @@
 
 /* globals THREE, _ */
 
-class ThreeTextureGenerator {
-  constructor() {
-  }
+export default class ThreeTextureGenerator {
+  constructor() {}
 
-  createTexture(url, options = {}) {
+  static createTexture(source, options = {}) {
     let texture;
-    let {repeat, cube} = options;
-    options = _.omit(options, ['repeat', 'cube']);
+    let {repeat, cube, video} = options;
+    options = _.omit(options, ['repeat', 'cube', 'video']);
 
     if(cube){
-      texture = THREE.ImageUtils.loadTextureCube(url);
+      texture = THREE.ImageUtils.loadTextureCube(source);
+    } else if(video) {
+      texture = new THREE.Texture(source);
     } else {
-      texture = THREE.ImageUtils.loadTexture(url);
+      texture = THREE.ImageUtils.loadTexture(source);
     }
     _.extend(texture, options);
     if (repeat) {
@@ -26,5 +27,3 @@ class ThreeTextureGenerator {
     return texture;
   }
 }
-
-module.exports = ThreeTextureGenerator;

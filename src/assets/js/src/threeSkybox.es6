@@ -3,14 +3,14 @@
  */
 
 /* global THREE */
-let ThreeHub = require('./threeHub.es6'),
-    exceptions = require('./threeExceptions.es6');
+import ThreeHub from './threeHub.es6';
+import MissingParameterException from './threeExceptions.es6';
 
 class ThreeSkybox {
   constructor(texture, size = 500, widthSegments = undefined, heightSegments = undefined) {
 
     if(!texture) {
-      throw new exceptions.MissingParameterException('ThreeSkybox: texture is required');
+      throw new MissingParameterException('ThreeSkybox: texture is required');
     }
 
     this.skyBox = new THREE.Mesh(

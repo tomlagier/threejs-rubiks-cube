@@ -8,13 +8,14 @@
  */
 
 /* global THREE, _ */
-let exceptions = require('./threeExceptions.es6');
+import UnsupportedLoaderException from './threeExceptions.es6';
+import MissingParameterException from './threeExceptions.es6';
 
-class ThreeGeometryLoader {
+export default class ThreeGeometryLoader {
   load(url, callback = ()=>{}, options = {}) {
 
     if(!url) {
-      throw new exceptions.MissingParameterException('GeometryFile: url parameter is required');
+      throw new MissingParameterException('GeometryFile: url parameter is required');
     }
     _.extend(this, { url, callback, options });
 
@@ -46,7 +47,7 @@ class ThreeGeometryLoader {
         this.callback
       );
     } else {
-      throw new exceptions.UnsupportedLoaderException('GeometryFile: Only OBJMTL, OBJ, and JSON loaders are supported');
+      throw new UnsupportedLoaderException('GeometryFile: Only OBJMTL, OBJ, and JSON loaders are supported');
     }
   }
 
@@ -65,5 +66,3 @@ class ThreeGeometryLoader {
     return this.url.find(url => this.getExtension(url) === extension);
   }
 }
-
-module.exports = ThreeGeometryLoader;

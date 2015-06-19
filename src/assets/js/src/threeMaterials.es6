@@ -3,10 +3,10 @@
  */
 
 /* global THREE */
-let ThreeHub = require('./threeHub.es6'),
-    exceptions = require('./threeExceptions.es6');
+import ThreeHub from './threeHub.es6';
+import NotFoundException from './threeExceptions.es6';
 
-class ThreeMaterials {
+export default class ThreeMaterials {
   setup() {
     this.materials = {};
     this.createMaterials();
@@ -222,7 +222,7 @@ class ThreeMaterials {
     let material = this.materials[materialName];
 
     if(!material) {
-      throw new exceptions.NotFoundException('ThreeMaterials: Material not found');
+      throw new NotFoundException('ThreeMaterials: Material not found');
     }
 
     return material;
@@ -232,5 +232,3 @@ class ThreeMaterials {
     this.materials[name] = material;
   }
 }
-
-module.exports = ThreeMaterials;

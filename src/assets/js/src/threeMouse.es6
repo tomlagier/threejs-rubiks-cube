@@ -4,9 +4,9 @@
 
 /* global $, THREE */
 
-let ThreeHub = require('./threeHub.es6');
+import ThreeHub from './threeHub.es6';
 
-class ThreeMouse {
+export default class ThreeMouse {
   constructor() {
     this.position = {
       x: 0,
@@ -113,5 +113,3 @@ class ThreeMouse {
     });
   }
 }
-
-module.exports = ThreeMouse;

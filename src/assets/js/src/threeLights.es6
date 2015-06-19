@@ -3,9 +3,9 @@
  */
 
 /* globals THREE */
-let ThreeHub = require('./threeHub.es6');
+import ThreeHub from './threeHub.es6';
 
-class ThreeLights {
+export default class ThreeLights {
   constructor() {
     this.lights = {
       ambientLight: new THREE.AmbientLight(0x444444),
@@ -47,5 +47,3 @@ class ThreeLights {
     ThreeHub.scene.addAll(this.lights);
   }
 }
-
-module.exports = ThreeLights;

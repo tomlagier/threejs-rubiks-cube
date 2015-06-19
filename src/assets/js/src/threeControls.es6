@@ -4,7 +4,7 @@
 
 /* global THREE */
 
-class ThreeControls {
+export default class ThreeControls {
   constructor(camera, domElement) {
     this.controller = new THREE.OrbitControls(...arguments);
   }
@@ -13,5 +13,3 @@ class ThreeControls {
     this.controller.update();
   }
 }
-
-module.exports = ThreeControls;

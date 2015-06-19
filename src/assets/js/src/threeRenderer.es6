@@ -3,9 +3,9 @@
  */
 
 /* global THREE, _*/
-let ThreeHub = require('./threeHub.es6');
+import ThreeHub from './threeHub.es6';
 
-class ThreeRenderer extends THREE.WebGLRenderer {
+export default class ThreeRenderer {
   constructor(options = {
     antialias: true,
     autoClear: false,
@@ -17,18 +17,32 @@ class ThreeRenderer extends THREE.WebGLRenderer {
     precision: 'highp',
     clearAlpha: 0
   }) {
-    super(options);
 
-    this.setSize(window.innerWidth, window.innerHeight);
-    this.setClearColor(0x000000, 0);
-    this.setPixelRatio(window.devicePixelRatio);
+    this.WebGLRenderer = new THREE.WebGLRenderer(options);
 
-    _.extend(this, options);
+    this.WebGLRenderer.setSize(window.innerWidth, window.innerHeight);
+    this.WebGLRenderer.setClearColor(0x000000, 0);
+    this.WebGLRenderer.setPixelRatio(window.devicePixelRatio);
+
+    _.extend(this.WebGLRenderer, options);
+
+    this.callbacks = {};
   }
 
   setup() {
-    ThreeHub.$el.append(this.domElement);
+    ThreeHub.$el.append(this.WebGLRenderer.domElement);
+  }
+
+  addRenderCallback(name, func) {
+    this.callbacks[name] = func;
+  }
+
+  removeRenderCallback(name) {
+    delete this.callbacks[name];
+  }
+
+  renderFrame(scene, camera, ...args) {
+    _.each(this.callbacks, callback => callback());
+    this.WebGLRenderer.render(scene, camera, ...args);
   }
 }
-
-module.exports = ThreeRenderer;

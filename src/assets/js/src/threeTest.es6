@@ -363,7 +363,7 @@ module.exports = function (el) {
 
       this.textures = this.textures || {};
       this.textures.videoTexture = new THREE.Texture(this.video[0]);
-      this.textures.croppedVideoTexture = new THREE.Texture(this.canvas[0]);
+      //this.textures.croppedVideoTexture = new THREE.Texture(this.canvas[0]);
       this.textures.videoTexture.needsUpdate = true;
       this.textures.videoTexture.minFilter = THREE.NearestFilter;
 

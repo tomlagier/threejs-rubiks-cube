@@ -8,15 +8,18 @@ class ThreeEventHub {
   constructor() {}
 }
 
-let eventEmitter = require('event-emitter');
-let eventHub = eventEmitter(new ThreeEventHub());
+import eventEmitter from 'event-emitter';
 
-module.exports = {
-  hub: eventHub,
-  create(obj) {
-    eventEmitter(obj);
-  },
-  createAll(targets){
-     _.each(targets, target => this.create(target));
-  }
+export let hub = eventEmitter(new ThreeEventHub());
+export function create(obj) {
+  eventEmitter(obj);
+}
+export function createAll(targets) {
+  _.each(targets, target => create(target));
+}
+
+export default {
+  hub,
+  create,
+  createAll
 };

@@ -2,11 +2,12 @@
  * Child class for Note 4 geometry parsing duties
  */
 
-let ThreeGeometryFile = require('./threeGeometryFile.es6'),
-    ThreeGroup = require('./threeGroup.es6'),
-    ThreeHub = require('./threeHub.es6');
+import ThreeGeometryFile from './threeGeometryFile.es6';
+import ThreeGroup from './threeGroup.es6';
+import ThreeNote4Pen from './threeNote4Pen.es6';
+import ThreeHub from './threeHub.es6';
 
-export class ThreeNote4 extends ThreeGeometryFile {
+export default class ThreeNote4 extends ThreeGeometryFile {
   constructor() {
     super();
     this.url = ['assets/models/note4-2.obj', 'assets/models/note4.mtl'];
@@ -23,7 +24,7 @@ export class ThreeNote4 extends ThreeGeometryFile {
    */
   createGroups() {
     this.parts = {
-      pen: new ThreeN4PenGroup({name: 'pen'}),
+      pen: new ThreeNote4Pen({name: 'pen'}),
       battery: new ThreeGroup({name: 'battery'}),
       sdCard: new ThreeGroup({name: 'sdCard'}),
       body: new ThreeGroup({name: 'body'})

@@ -4,9 +4,9 @@
 
 /* globals THREE, _ */
 
-let ThreeHub = require('./threeHub.es6');
+import ThreeHub from './threeHub.es6';
 
-class ThreeCameras {
+export default class ThreeCameras {
   constructor() {
     _.extend(this, {
       main: new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000),
@@ -28,5 +28,3 @@ class ThreeCameras {
     ThreeHub.cameras = this;
   }
 }
-
-module.exports = ThreeCameras;

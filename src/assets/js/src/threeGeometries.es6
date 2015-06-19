@@ -2,11 +2,11 @@
  * Loads all geometries, and exposes them for grouping
  */
 
-let ThreeNote4 = require('./threeNote4.es6'),
-    ThreeSkybox = require('./threeSkybox.es6'),
-    ThreeHub = require('./threeHub.es6');
+import ThreeNote4 from './threeNote4.es6';
+import ThreeSkybox from './threeSkybox.es6';
+import ThreeHub from './threeHub.es6';
 
-class ThreeGeometries {
+export default class ThreeGeometries {
   constructor() {
     ThreeHub.geometries = this;
   }
@@ -18,5 +18,3 @@ class ThreeGeometries {
     );
   }
 }
-
-module.exports = ThreeGeometries;

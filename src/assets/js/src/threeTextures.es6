@@ -5,13 +5,12 @@
  */
 
 /* global THREE */
-let ThreeHub = require('./threeHub.es6'),
-    ThreeTextureFactory = require('./threeTextureFactory.es6'),
-    exceptions = require('./threeExceptions.es6');
+import ThreeHub from './threeHub.es6';
+import ThreeTextureFactory from './threeTextureFactory.es6';
+import NotFoundException from './threeExceptions.es6';
 
-class ThreeTextures {
+export default class ThreeTextures {
   constructor () {
-    this.textureFactory = new ThreeTextureFactory();
     this.textures = {};
     this.createTextures();
     ThreeHub.textures = this;
@@ -20,7 +19,7 @@ class ThreeTextures {
   setup() {}
 
   createTextures() {
-    this.add('mapHeight', this.textureFactory.createTexture('assets/images/textures/back_b.jpg', {
+    this.add('mapHeight', ThreeTextureFactory.createTexture('assets/images/textures/back_b.jpg', {
         anisotropy: 4,
         wrapS: THREE.RepeatWrapping,
         wrapT: THREE.RepeatWrapping,
@@ -28,7 +27,7 @@ class ThreeTextures {
       })
     );
 
-    this.add('mapFace', this.textureFactory.createTexture('assets/images/textures/lines.jpg', {
+    this.add('mapFace', ThreeTextureFactory.createTexture('assets/images/textures/lines.jpg', {
         wrapS: THREE.RepeatWrapping,
         wrapT: THREE.RepeatWrapping,
         repeat: {
@@ -38,7 +37,7 @@ class ThreeTextures {
       })
     );
 
-    this.add('mapNoise', this.textureFactory.createTexture('assets/images/textures/noise.png', {
+    this.add('mapNoise', ThreeTextureFactory.createTexture('assets/images/textures/noise.png', {
         anisotropy: 16,
         wrapS: THREE.RepeatWrapping,
         wrapT: THREE.RepeatWrapping,
@@ -49,7 +48,7 @@ class ThreeTextures {
       })
     );
 
-    this.add('mapPenAlpha', this.textureFactory.createTexture('assets/images/textures/spen_alpha.png', {
+    this.add('mapPenAlpha', ThreeTextureFactory.createTexture('assets/images/textures/spen_alpha.png', {
         anisotropy: 4,
         wrapS: THREE.RepeatWrapping,
         wrapT: THREE.RepeatWrapping,
@@ -60,27 +59,27 @@ class ThreeTextures {
       })
     );
 
-    this.add('mapMask', this.textureFactory.createTexture('assets/images/textures/graphics.png', {
+    this.add('mapMask', ThreeTextureFactory.createTexture('assets/images/textures/graphics.png', {
         anisotropy: 8,
         format: THREE.LuminanceFormat
       })
     );
 
-    this.add('mapCamera', this.textureFactory.createTexture('assets/images/textures/camera.jpg'));
+    this.add('mapCamera', ThreeTextureFactory.createTexture('assets/images/textures/camera.jpg'));
 
-    this.add('mapScreen', this.textureFactory.createTexture('assets/images/textures/screen.jpg', {
+    this.add('mapScreen', ThreeTextureFactory.createTexture('assets/images/textures/screen.jpg', {
         anisotropy: 4,
         filters: THREE.LinearFilter
       })
     );
 
-    this.add('mapSDcard', this.textureFactory.createTexture('assets/images/textures/sdcard.jpg'));
+    this.add('mapSDcard', ThreeTextureFactory.createTexture('assets/images/textures/sdcard.jpg'));
 
-    this.add('mapBattery', this.textureFactory.createTexture('assets/images/textures/battery.png'));
+    this.add('mapBattery', ThreeTextureFactory.createTexture('assets/images/textures/battery.png'));
 
-    this.add('skyBox', this.textureFactory.createTexture('assets/images/textures/background-image2.jpg'));
+    this.add('skyBox', ThreeTextureFactory.createTexture('assets/images/textures/background-image2.jpg'));
 
-    this.add('mapCube', this.textureFactory.createTexture([
+    this.add('mapCube', ThreeTextureFactory.createTexture([
         'assets/images/cubemaps/environment/pos-x.png',
         'assets/images/cubemaps/environment/neg-x.png',
         'assets/images/cubemaps/environment/pos-y.png',
@@ -98,7 +97,7 @@ class ThreeTextures {
     let texture = this.textures[textureName];
 
     if(!texture) {
-      throw new exceptions.NotFoundException('ThreeTextures: Texture not found');
+      throw new NotFoundException('ThreeTextures: Texture not found');
     }
 
     return texture;
@@ -108,5 +107,3 @@ class ThreeTextures {
     this.textures[name] = texture;
   }
 }
-
-module.exports = ThreeTextures;

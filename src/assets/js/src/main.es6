@@ -5,10 +5,10 @@
 
 /*eslint-disable */
 /* global jQuery, _, THREE, TweenMax, TimelineMax */
-require("babel-core/polyfill");
+import "babel-core/polyfill";
 
-let ThreeApp = require('./threeApp.es6'),
-    ThreeHub = require('./threeHub.es6');
+import ThreeApp from './threeApp.es6';
+import ThreeHub from './threeHub.es6';
 
 let threeApp = new ThreeApp('.canvas-wrapper');
 
