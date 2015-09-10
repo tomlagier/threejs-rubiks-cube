@@ -15,10 +15,10 @@ export default class ThreeWebcam {
       audio: false
     }
   }) {
-
     evented.create(this);
     this.setupPrefixes();
     this.accessWebcam(options.permissions);
+
   }
 
   accessWebcam(permissions) {
@@ -35,18 +35,18 @@ export default class ThreeWebcam {
       throw new StreamNotReadyException('ThreeWebcam: Stream is not ready');
     }
 
-    let vidElement = $('<video></video>')
-      .attr({
-        width,
-        height,
-        src: this.stream
-      })
-      .css({
-        visibility: 'hidden',
-        left: -99999
-      });
-
-    ThreeHub.$el.append(vidElement);
+    // let vidElement = $('<video></video>')
+    //   .attr({
+    //     width,
+    //     height,
+    //     src: this.stream
+    //   })
+    //   .css({
+    //     visibility: 'hidden',
+    //     left: -99999
+    //   });
+    //
+    // ThreeHub.$el.append(vidElement);
 
     return TextureFactory.createTexture(this.stream, {
       video: true,
