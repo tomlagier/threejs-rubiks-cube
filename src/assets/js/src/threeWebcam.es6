@@ -35,32 +35,35 @@ export default class ThreeWebcam {
       throw new StreamNotReadyException('ThreeWebcam: Stream is not ready');
     }
 
-    // let vidElement = $('<video></video>')
-    //   .attr({
-    //     width,
-    //     height,
-    //     src: this.stream
-    //   })
-    //   .css({
-    //     visibility: 'hidden',
-    //     left: -99999
-    //   });
-    //
-    // ThreeHub.$el.append(vidElement);
+    this.$video = $(`<video id="${this.createVideoId()}"></video>`);
+    this.video = this.$video[0];
+    ThreeHub.$textures.append(this.$video);
 
-    return TextureFactory.createTexture(this.stream, {
+    this.$video.attr('src', this.stream);
+    this.video.play();
+
+    this.texture = TextureFactory.createTexture(this.video, {
       video: true,
       needsUpdate: true,
       minFilter: THREE.NearestFilter
     });
   }
 
+  updateVideoTexture(options){
+    _.extend(this.texture, options);
+  }
+
   createVideoMaterial(width = 640, height = 480) {
+    this.createVideoTexture(width, height);
+
     return new THREE.MeshLambertMaterial({
-      map: this.createStreamTexture(width, height),
-      transparent: true,
+      map: this.texture,
       side: THREE.DoubleSide
     });
+  }
+
+  createVideoId() {
+    return 'video-player-' + Math.floor(Math.random() * 1000000);
   }
 
   streamError(error) {

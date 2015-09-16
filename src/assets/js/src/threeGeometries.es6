@@ -4,6 +4,7 @@
 
 import ThreeNote4 from './threeNote4.es6';
 import ThreeSkybox from './threeSkybox.es6';
+import ThreeWebcamReflection from './threeWebcamReflection.es6';
 import ThreeHub from './threeHub.es6';
 
 export default class ThreeGeometries {
@@ -16,5 +17,6 @@ export default class ThreeGeometries {
     this.skyBox = new ThreeSkybox(
       ThreeHub.textures.get('skyBox')
     );
+    this.reflectionRectangle = new ThreeWebcamReflection();
   }
 }

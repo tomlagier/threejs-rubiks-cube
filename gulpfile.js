@@ -216,7 +216,9 @@ _.extend(config.webpack, {
   output: {
     path: path.resolve(config.build, 'assets/js'),
     filename: 'app.js'
-  }
+  },
+  devtool: '#inline-source-map',
+
 });
 
 gulp.task('webpack', [], function (callback) {

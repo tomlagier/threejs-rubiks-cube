@@ -3,17 +3,19 @@
  */
 
 /* globals THREE, _ */
+import ThreeHub from './threeHub.es6';
 
 export default class ThreeTextureGenerator {
   constructor() {}
 
   static createTexture(source, options = {}) {
     let texture;
-    let {repeat, cube, video} = options;
+    const {repeat, cube, video} = options;
     options = _.omit(options, ['repeat', 'cube', 'video']);
 
     if(cube){
       texture = THREE.ImageUtils.loadTextureCube(source);
+    //Need to create and play hidden video element
     } else if(video) {
       texture = new THREE.Texture(source);
     } else {

@@ -5,7 +5,10 @@ import "babel-core/polyfill";
 import ThreeApp from './threeApp.es6';
 import ThreeHub from './threeHub.es6';
 
-let threeApp = new ThreeApp('.canvas-wrapper');
+let threeApp = new ThreeApp({
+  canvas: '.canvas-wrapper',
+  textures: '.texture-wrapper'
+});
 
 window.ThreeHub = ThreeHub;
 threeApp.start();

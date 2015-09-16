@@ -30,7 +30,6 @@ export default class ThreeScene extends THREE.Scene {
       materials: new ThreeMaterials(),
       mouse: new ThreeMouse(),
       geometries: new ThreeGeometries(),
-      webcam: new ThreeWebcam(),
       actions: new ThreeActions()
     });
   }
