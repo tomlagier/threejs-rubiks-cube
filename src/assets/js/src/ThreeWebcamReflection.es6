@@ -33,7 +33,7 @@ export default class ThreeWebcamReflection {
         needsUpdate: true
       });
 
-      ThreeHub.scene.cameras.cube.updateCubeMap(this.renderer, this.scene);
+      ThreeHub.scene.cameras.cube.updateCubeMap(ThreeHub.scene.renderer.WebGLRenderer, ThreeHub.scene);
     });
   }
 
