@@ -5,17 +5,16 @@
 
 /* global _, THREE */
 
-import ThreeRenderer from './threeRenderer.es6';
-import ThreeCameras from './threeCameras.es6';
-import ThreeLights from './threeLights.es6';
-import ThreeTextures from './threeTextures.es6';
-import ThreeMaterials from './threeMaterials.es6';
-import ThreeGeometries from './threeGeometries.es6';
-import ThreeControls from './threeControls.es6';
-import ThreeMouse from './threeMouse.es6';
-import ThreeWebcam from './threeWebcam.es6';
-import ThreeActions from './threeActions.es6';
-import ThreeHub from './threeHub.es6';
+import ThreeRenderer from '../framework/threeRenderer.es6';
+import ThreeCameras from '../scenes/threeCameras.es6';
+import ThreeLights from '../scenes/threeLights.es6';
+import ThreeTextures from '../stores/threeTextures.es6';
+import ThreeMaterials from '../stores/threeMaterials.es6';
+import ThreeGeometries from '../geometries/threeGeometries.es6';
+import ThreeControls from '../input/threeControls.es6';
+import ThreeMouse from '../input/threeMouse.es6';
+import ThreeActions from '../input/threeActions.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeScene extends THREE.Scene {
   constructor() {

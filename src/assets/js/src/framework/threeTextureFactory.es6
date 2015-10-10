@@ -3,7 +3,6 @@
  */
 
 /* globals THREE, _ */
-import ThreeHub from './threeHub.es6';
 
 export default class ThreeTextureGenerator {
   constructor() {}

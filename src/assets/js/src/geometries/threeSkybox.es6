@@ -3,8 +3,8 @@
  */
 
 /* global THREE */
-import ThreeHub from './threeHub.es6';
-import MissingParameterException from './threeExceptions.es6';
+import ThreeHub from '../framework/threeHub.es6';
+import MissingParameterException from '../framework/threeExceptions.es6';
 
 class ThreeSkybox {
   constructor(texture, size = 500, widthSegments = undefined, heightSegments = undefined) {

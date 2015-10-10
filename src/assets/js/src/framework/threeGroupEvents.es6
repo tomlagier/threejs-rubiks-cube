@@ -2,7 +2,7 @@
  * Class for mixing in events to groups
  */
 
-import ThreeHub from './threeHub.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeGroupEvents{
   constructor(parent) {

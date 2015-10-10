@@ -40,7 +40,8 @@
   },
   "webpack" : {
     "debug": true,
-    "progress": true
+    "progress": true,
+    "plugins" : []
   },
   "defaults" : {
     "js" : {},

@@ -3,7 +3,7 @@
  */
 
 /* globals TweenMax */
-import ThreeGroup from './threeGroup.es6';
+import ThreeGroup from '../framework/threeGroup.es6';
 
 export default class ThreeNote4Pen extends ThreeGroup {
   constructor() {

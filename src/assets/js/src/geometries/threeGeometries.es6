@@ -2,10 +2,10 @@
  * Loads all geometries, and exposes them for grouping
  */
 
-import ThreeNote4 from './threeNote4.es6';
-import ThreeSkybox from './threeSkybox.es6';
-import ThreeWebcamReflection from './threeWebcamReflection.es6';
-import ThreeHub from './threeHub.es6';
+import ThreeNote4 from '../geometries/threeNote4.es6';
+import ThreeSkybox from '../geometries/threeSkybox.es6';
+import ThreeWebcamReflection from '../geometries/threeWebcamReflection.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeGeometries {
   constructor() {

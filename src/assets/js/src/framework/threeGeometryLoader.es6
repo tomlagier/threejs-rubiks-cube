@@ -8,8 +8,8 @@
  */
 
 /* global THREE, _ */
-import UnsupportedLoaderException from './threeExceptions.es6';
-import MissingParameterException from './threeExceptions.es6';
+import UnsupportedLoaderException from '../framework/threeExceptions.es6';
+import MissingParameterException from '../framework/threeExceptions.es6';
 
 export default class ThreeGeometryLoader {
   load(url, callback = ()=>{}, options = {}) {

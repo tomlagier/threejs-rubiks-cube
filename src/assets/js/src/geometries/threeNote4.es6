@@ -2,10 +2,10 @@
  * Child class for Note 4 geometry parsing duties
  */
 
-import ThreeGeometryFile from './threeGeometryFile.es6';
-import ThreeGroup from './threeGroup.es6';
-import ThreeNote4Pen from './threeNote4Pen.es6';
-import ThreeHub from './threeHub.es6';
+import ThreeGeometryFile from '../framework/threeGeometryFile.es6';
+import ThreeGroup from '../framework/threeGroup.es6';
+import ThreeNote4Pen from '../geometries/threeNote4Pen.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeNote4 extends ThreeGeometryFile {
   constructor() {

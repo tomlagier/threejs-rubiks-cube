@@ -5,8 +5,8 @@
 
 /* globals TimelineMax */
 
-import AlreadyExistsException from './threeExceptions.es6';
-import NotFoundException from './threeExceptions.es6';
+import AlreadyExistsException from '../framework/threeExceptions.es6';
+import NotFoundException from '../framework/threeExceptions.es6';
 
 export default class ThreeGroupAnimations{
   constructor(parent) {

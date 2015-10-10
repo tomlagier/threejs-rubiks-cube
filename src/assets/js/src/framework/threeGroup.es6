@@ -7,8 +7,8 @@
 
 /* global THREE, _ */
 
-import ThreeGroupEvents from './threeGroupEvents.es6';
-import ThreeGroupAnimations from './threeGroupAnimations.es6';
+import ThreeGroupEvents from '../framework/threeGroupEvents.es6';
+import ThreeGroupAnimations from '../framework/threeGroupAnimations.es6';
 
 export default class ThreeGroup extends THREE.Group {
   constructor (options = {}) {

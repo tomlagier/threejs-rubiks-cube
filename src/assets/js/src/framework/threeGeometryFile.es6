@@ -2,7 +2,7 @@
  * Base class for groups of geometries loaded from exports
  */
 
-import ThreeGeometryLoader from './threeGeometryLoader.es6';
+import ThreeGeometryLoader from '../framework/threeGeometryLoader.es6';
 
 export default class ThreeGeometryFile {
   constructor() {

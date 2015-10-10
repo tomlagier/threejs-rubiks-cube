@@ -4,7 +4,7 @@
 
 /* global $, THREE */
 
-import ThreeHub from './threeHub.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeMouse {
   constructor() {

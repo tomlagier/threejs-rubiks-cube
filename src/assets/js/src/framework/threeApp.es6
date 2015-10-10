@@ -4,9 +4,8 @@
 
 /* global $, _ */
 
-import ThreeScene from './threeScene.es6';
-import ThreeHub from './threeHub.es6';
-//import ThreeEvents from './threeEvents.es6';
+import ThreeScene from '../scenes/threeScene.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeApp {
   constructor(options) {

@@ -5,9 +5,9 @@
  */
 
 /* global THREE */
-import ThreeHub from './threeHub.es6';
-import ThreeTextureFactory from './threeTextureFactory.es6';
-import NotFoundException from './threeExceptions.es6';
+import ThreeHub from '../framework/threeHub.es6';
+import ThreeTextureFactory from '../framework/threeTextureFactory.es6';
+import NotFoundException from '../framework/threeExceptions.es6';
 
 export default class ThreeTextures {
   constructor () {

@@ -7,7 +7,7 @@ var gulp = require('gulp'),
   gutil = require('gulp-util'),
   gulpif = require('gulp-if'),
   postCSS = require('gulp-postcss'),
-  nano = require('gulp-cssnano'),
+  //nano = require('gulp-cssnano'),
   sourcemaps = require('gulp-sourcemaps'),
   _ = require('lodash'),
   runSequence = require('run-sequence'),
@@ -17,43 +17,44 @@ var gulp = require('gulp'),
   filter = require('gulp-filter'),
   debug = require('gulp-debug'),
   concat = require('gulp-concat'),
-  path = require('path');
+  path = require('path'),
+  sass = require('gulp-sass');
 
 // PostCSS transforms
 // Only use the ones you'll actually use!
-var colorFunction = require('postcss-color-function'),
-  colorGray = require('postcss-color-gray'),
-  colorHexAlpha = require('postcss-color-hex-alpha'),
-  customMedia = require('postcss-custom-media'),
-  customSelectors = require('postcss-custom-selectors'),
-  mediaMinMax = require('postcss-media-minmax'),
-  selectorNot = require('postcss-selector-not'),
-  imageSet = require('postcss-image-set'),
-  vmin = require('postcss-vmin'),
-  willChange = require('postcss-will-change'),
-  colorAlpha = require('postcss-color-alpha'),
-  colorHcl = require('postcss-color-hcl'),
-  pcssEach = require('postcss-each'),
-  pcssFor = require('postcss-for'),
-  pcssCond = require('postcss-conditionals'),
-  mixins = require('postcss-mixins'),
-  grid = require('postcss-grid'),
-  simpleVariables = require('postcss-simple-vars'),
-  quantityQueries = require('postcss-quantity-queries'),
-  simpleExtend = require('postcss-simple-extend'),
+var //colorFunction = require('postcss-color-function'),
+  //colorGray = require('postcss-color-gray'),
+  //colorHexAlpha = require('postcss-color-hex-alpha'),
+  //customMedia = require('postcss-custom-media'),
+  //customSelectors = require('postcss-custom-selectors'),
+  //mediaMinMax = require('postcss-media-minmax'),
+  //selectorNot = require('postcss-selector-not'),
+  //imageSet = require('postcss-image-set'),
+  //vmin = require('postcss-vmin'),
+  //willChange = require('postcss-will-change'),
+  //colorAlpha = require('postcss-color-alpha'),
+  //colorHcl = require('postcss-color-hcl'),
+  //pcssEach = require('postcss-each'),
+  //pcssFor = require('postcss-for'),
+  //pcssCond = require('postcss-conditionals'),
+  //mixins = require('postcss-mixins'),
+  //grid = require('postcss-grid'),
+  //simpleVariables = require('postcss-simple-vars'),
+  //quantityQueries = require('postcss-quantity-queries'),
+  //simpleExtend = require('postcss-simple-extend'),
   //verticalRhythm = require('postcss-vertical-rhythm'),
-  at2x = require('postcss-at2x'),
-  pcssImport = require('postcss-import'),
-  sprites = require('postcss-sprites'),
-  pcssUrl = require('postcss-url'),
+  //at2x = require('postcss-at2x'),
+  //pcssImport = require('postcss-import'),
+  //sprites = require('postcss-sprites'),
+  //pcssUrl = require('postcss-url'),
   easings = require('postcss-easings'),
   //generatePreset = require('postcss-generate-preset'),
   //classPrefix = require('postcss-class-prefix'),
-  nested = require('postcss-nested'),
+  //nested = require('postcss-nested'),
   pixrem = require('pixrem'),
   mqpacker = require('css-mqpacker'),
   //csswring = require('csswring'),
-  cssgrace = require('cssgrace'),
+  //cssgrace = require('cssgrace'),
   //doiuse = require('doiuse'),
   autoprefixer = require('autoprefixer-core');
 
@@ -93,42 +94,11 @@ gulp.task('copy', function () {
 ////// CSS //////
 //Pass individual plugin options here. Remove plugin from default list and add to processor list if you need environment-specific config
 config.css.transforms = [
-  pcssImport({
-    path: [config.src + '/assets/css/src']
-  }),
-  mixins,
-  simpleExtend,
-  pcssEach,
-  pcssFor,
-  pcssCond,
-  nested,
-  customSelectors,
-  customMedia,
-  simpleVariables,
-  selectorNot,
-  colorFunction,
-  pcssUrl,
   autoprefixer({
-    browsers: ['ie >= 9', '> 1%']
+    browsers: ['ie > 9', '> 1%']
   }),
-  colorGray,
-  colorHexAlpha,
-  mediaMinMax,
-  imageSet,
-  vmin,
-  willChange,
-  colorAlpha,
-  colorHcl,
-  grid,
-  quantityQueries,
-  //verticalRhythm,
-  at2x,
-  sprites,
   easings,
-  pixrem,
-  //generatePreset,
-  //classPrefix,
-  cssgrace
+  pixrem
 ];
 
 gulp.task('css', [], function () {
@@ -154,14 +124,16 @@ gulp.task('css', [], function () {
 
   gulp.src(config.css.src)
     .pipe(stripPartials)
-    .pipe(debug())
     .pipe(gulpif(isDev, sourcemaps.init()))
+    .pipe(sass({
+      outputStyle: !isDev ? 'compressed' : 'expanded',
+      onError: function (err) {
+        gutil.error('[error!]', err.message);
+      }
+    }))
     .pipe(gulpif(isDev, postCSS(processors.dev).on('error', function (error) {
       gutil.error('[error!]', error.message);
     }), postCSS(processors.prod).on('error', function (error) {
-      gutil.error('[error!]', error.message);
-    })))
-    .pipe(gulpif(!isDev, nano().on('error', function (error) {
       gutil.error('[error!]', error.message);
     })))
     .pipe(gulpif(isDev, sourcemaps.write()))
@@ -172,7 +144,6 @@ gulp.task('css-lib', [], function () {
   var dest = path.join(config.build, 'assets/css');
 
   gulp.src(config.css.lib)
-    .pipe(debug())
     .pipe(concat('libs.css').on('error', function (error) {
       gutil.error('[error!]', error.message);
     }))
@@ -204,21 +175,22 @@ gulp.task('js-lib', [], function () {
 _.extend(config.webpack, {
   module: {
     loaders: [{
-      test: /\.(jsx|es6)$/,
-      //exclude: /(node_modules|bower_components)/,
-      loader: 'babel'
+      test: /\.(js|jsx|es6)$/,
+      loader: 'babel',
+      exclude: /node_modules/
       // query: {
       //   stage: 2
       // }
     }]
   },
-  entry: config.js.src,
+  entry: {
+    app: config.js.src
+  },
   output: {
     path: path.resolve(config.build, 'assets/js'),
     filename: 'app.js'
   },
-  devtool: '#inline-source-map',
-
+  devtool: '#inline-source-map'
 });
 
 gulp.task('webpack', [], function (callback) {
@@ -230,21 +202,24 @@ gulp.task('webpack', [], function (callback) {
     gutil.log('[webpack]', stats.toString({
       colors: true
     }));
-      callback();
+    callback();
   });
 });
 
 gulp.task('webpack-dev-server', ['build'], function () {
   //Start a webpack-dev-server
+  var serverName = require('./package.json').local.serverAddress;
+
+  if(isDev) {
+    config.webpack.entry.app.unshift('webpack-dev-server/client?http://' + serverName + ':8080', 'webpack/hot/dev-server');
+    config.webpack.plugins.unshift(new webpack.HotModuleReplacementPlugin());
+  }
+
   var compiler = webpack(config.webpack);
-  var serverName = require('./package.json').name;
   var serverOpts = {
     contentBase: config.build,
-    publicPath: config.build,
-    filename: '/assets/js/app.js',
-    // proxy: {
-    //   '*': serverName
-    // },
+    publicPath: '/assets/js/',
+    filename: 'app.js',
     stats: {
       colors: true
     },
@@ -269,7 +244,7 @@ gulp.task('webpack-dev-server', ['build'], function () {
 
 ////// BUILDING //////
 gulp.task('build', function (callback) {
-  runSequence('clean', ['copy', 'css', 'css-lib', 'js-lib'], 'webpack', callback);
+  runSequence('clean', ['copy', 'css', 'css-lib', 'js-lib'], callback);
 });
 
 /////// WATCHING //////
@@ -277,9 +252,8 @@ gulp.task('watch', ['webpack-dev-server'], function () {
   gulp.watch(config.watch.cssLib, ['css-lib']);
   gulp.watch(config.watch.jsLib, ['js-lib']);
   gulp.watch(config.watch.staticFiles, ['copy']);
-  gulp.watch(config.watch.app, ['webpack']);
 });
 
 ////// START //////
 gulp.task('dev', ['setdev', 'build', 'watch']);
-gulp.task('default', ['build']);
+gulp.task('default', ['build', 'webpack']);

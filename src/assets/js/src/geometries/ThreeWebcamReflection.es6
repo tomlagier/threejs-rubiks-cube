@@ -5,8 +5,8 @@
 
 /* globals THREE */
 
-import ThreeWebcam from './threeWebcam.es6';
-import ThreeHub from './threeHub.es6';
+import ThreeWebcam from '../input/threeWebcam.es6';
+import ThreeHub from '../framework/threeHub.es6';
 
 export default class ThreeWebcamReflection {
   constructor() {
