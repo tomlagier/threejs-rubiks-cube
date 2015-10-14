@@ -13,6 +13,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     super();
     this.url = ['assets/models/rubix_cube.obj', 'assets/models/rubix_cube.mtl'];
     this.load();
+    this.currentlyRotating = new ThreeRubicsCubeSection();
   }
 
   onLoad(group) {
@@ -33,15 +34,27 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
   bindCubeEvents() {
     this.parts.forEach(cube => {
       cube.on('mousedown', () =>{
+
+        //Reversed because that's the way the axis lookup works
         let groups = {
-          x: this.getPlaneGroup(cube, 'x'),
-          y: this.getPlaneGroup(cube, 'y')
+          x: this.getPlaneGroup(cube, 'y'),
+          y: this.getPlaneGroup(cube, 'x')
         }
-        _.each(groups, group => {
-          group.forEach(cube => {
-            cube.scale.set(1.1, 1.1, 1.1);
-          });
-        });
+
+        let startPosition = new THREE.Vector2(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y);
+        let endPosition, deltaX, deltaY;
+
+        setTimeout(() => {
+          endPosition = new THREE.Vector2(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y);
+          deltaX = Math.abs(endPosition.x - startPosition.x);
+          deltaY = Math.abs(endPosition.y - startPosition.y);
+
+          if(deltaX > deltaY) {
+            this.createRotationGroup(groups.x, 'x');
+          } else {
+            this.createRotationGroup(groups.y, 'y');
+          }
+        }, 50);
 
         ThreeHub.$el.one('mouseup.rubics', () => {
           this.lockPosition();
@@ -64,5 +77,28 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     return Array.from(group);
   }
 
-  lockPosition(){};
+  createRotationGroup(group, axis) {
+    this.currentlyRotating.addCubes(group);
+    let currentPosition = new THREE.Vector2(),
+        pastPosition = new THREE.Vector2(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y),
+        delta;
+
+    ThreeHub.$el.on('mousemove.cubeRotation', () => {
+      currentPosition.set(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y);
+
+      if(axis === 'x') {
+        delta = currentPosition.x - pastPosition.x;
+        this.currentlyRotating.rotateY(delta);
+      } else if (axis === 'y') {
+        delta = currentPosition.y - pastPosition.y;
+        this.currentlyRotating.rotateX(delta);
+      }
+      pastPosition.set(currentPosition.x, currentPosition.y);
+    });
+  }
+
+  lockPosition(){
+    ThreeHub.$el.off('mousemove.cubeRotation');
+    this.currentlyRotating.removeCubes();
+  };
 }

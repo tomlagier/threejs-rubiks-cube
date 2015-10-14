@@ -132,4 +132,5 @@ export default class ThreeMouse {
       group.trigger(eventName, evt);
     });
   }
+
 }
