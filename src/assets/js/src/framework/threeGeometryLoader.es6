@@ -23,31 +23,36 @@ export default class ThreeGeometryLoader {
   }
 
   chooseLoader() {
-    if(!Array.isArray(this.url)) {
-      this.url = [this.url];
-    }
-
-    if(this.urlHasExtension('mtl') && this.urlHasExtension('obj')) {
-      this.loader = new THREE.OBJMTLLoader();
-      this.loader.load(
-        this.getUrlByExtension('obj'),
-        this.getUrlByExtension('mtl'),
-        this.callback
-      );
-    } else if (this.urlHasExtension('obj')) {
-      this.loader = new THREE.OBJLoader();
-      this.loader.load(
-        this.getUrlByExtension('obj'),
-        this.callback
-      );
-    } else if (this.urlHasExtension('json')) {
-      this.loader = new THREE.JSONLoader();
-      this.loader.load(
-        this.getUrlByExtension('json'),
-        this.callback
-      );
+    if(this.options.loader) {
+      this.loader = this.options.loader;
+      this.loader.load(this.url, this.callback);
     } else {
-      throw new UnsupportedLoaderException('GeometryFile: Only OBJMTL, OBJ, and JSON loaders are supported');
+      if(!Array.isArray(this.url)) {
+        this.url = [this.url];
+      }
+
+      if(this.urlHasExtension('mtl') && this.urlHasExtension('obj')) {
+        this.loader = new THREE.OBJMTLLoader();
+        this.loader.load(
+          this.getUrlByExtension('obj'),
+          this.getUrlByExtension('mtl'),
+          this.callback
+        );
+      } else if (this.urlHasExtension('obj')) {
+        this.loader = new THREE.OBJLoader();
+        this.loader.load(
+          this.getUrlByExtension('obj'),
+          this.callback
+        );
+      } else if (this.urlHasExtension('json')) {
+        this.loader = new THREE.JSONLoader();
+        this.loader.load(
+          this.getUrlByExtension('json'),
+          this.callback
+        );
+      } else {
+        throw new UnsupportedLoaderException('GeometryFile: Only OBJMTL, OBJ, and JSON loaders are supported');
+      }
     }
   }
 

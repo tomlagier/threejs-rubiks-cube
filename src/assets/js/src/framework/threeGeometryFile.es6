@@ -9,7 +9,11 @@ export default class ThreeGeometryFile {
     this.loader = new ThreeGeometryLoader();
   }
 
-  load(callback = this.onLoad.bind(this), options = {}) {
+  /**
+   * Only supported option currently is "loader" which accepts a loader
+   */
+  load(options = {}) {
+    let callback = options.callback ? options.callback : this.onLoad.bind(this)
     this.loader.load(this.url, callback, options);
   }
 }

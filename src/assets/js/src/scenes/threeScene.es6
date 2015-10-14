@@ -55,6 +55,8 @@ export default class ThreeScene extends THREE.Scene {
   }
 
   startRendering() {
+    this.clock = new THREE.Clock();
+    this.clock.start();
     this.runRender();
   }
 

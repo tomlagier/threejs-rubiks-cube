@@ -4,7 +4,9 @@
 
 /* global $, THREE */
 
+import ThreeGroup from '../framework/threeGroup.es6';
 import ThreeHub from '../framework/threeHub.es6';
+import ThreeScene from '../scenes/threeScene.es6';
 
 export default class ThreeMouse {
   constructor() {
@@ -55,9 +57,27 @@ export default class ThreeMouse {
     return this.raycaster.intersectObjects(Array.from(this.watchedObjects), true);
   }
 
+  //TODO: Need to find intersections in children of watched objects as well
   filterIntersections(intersections, hovered = true) {
-    const intersectionSet = intersections.reduce((last, curr)=> last.add(curr.object.parent), new Set());
+    //Important, returns
+    const intersectionSet = intersections.reduce((last, curr)=> {
+      let foundGroup = false;
+      let object = curr.object;
+
+      //Travel up the tree looking for the wrapping group
+      while(!foundGroup) {
+        if(object instanceof ThreeGroup) {
+          foundGroup = true;
+        } else if(object instanceof ThreeScene) {
+          return;
+        } else {
+          object = object.parent;
+        }
+      }
+      return last.add(object);
+    }, new Set());
     let filteredIntersectionArray = Array.from(this.watchedObjects).filter(group => {
+
         return hovered ? intersectionSet.has(group) : !intersectionSet.has(group);
     });
     return filteredIntersectionArray;
