@@ -11,7 +11,7 @@ import ThreeHub from '../../framework/threeHub.es6';
 export default class ThreeRubicsCube extends ThreeGeometryFile {
   constructor() {
     super();
-    this.url = ['assets/models/rubix_cube.obj', 'assets/models/rubix_cube.mtl'];
+    this.url = ['assets/models/centered_cube.obj', 'assets/models/centered_cube.mtl'];
     this.load();
     this.currentlyRotating = new ThreeRubicsCubeSection();
   }
@@ -25,6 +25,8 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         pieces.push(cube)
       }
     });
+
+    //TODO: Center this!
     _.each(pieces, piece => this.parts.push(new ThreeRubicsCubePiece(piece)));
     ThreeHub.scene.addAll(this.parts);
 
@@ -34,6 +36,8 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
   bindCubeEvents() {
     this.parts.forEach(cube => {
       cube.on('mousedown', () =>{
+
+        ThreeHub.scene.controls.controller.enabled = false;
 
         //Reversed because that's the way the axis lookup works
         let groups = {
@@ -99,6 +103,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
   lockPosition(){
     ThreeHub.$el.off('mousemove.cubeRotation');
+    ThreeHub.scene.controls.controller.enabled = true;
     this.currentlyRotating.removeCubes();
   };
 }
