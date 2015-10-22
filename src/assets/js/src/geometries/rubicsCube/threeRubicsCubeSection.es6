@@ -7,6 +7,7 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
   }
 
   addCubes(cubes) {
+    this.rotation.set(0, 0, 0);
     cubes.forEach(cube => this.add(cube));
     ThreeHub.scene.add(this);
   }

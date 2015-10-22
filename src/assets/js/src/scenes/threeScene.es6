@@ -41,7 +41,12 @@ export default class ThreeScene extends THREE.Scene {
     this.materials.setup();
     this.geometries.setup();
 
-    this.controls = new ThreeControls(this.cameras.main, this.renderer.domElement);
+    this.controls = new ThreeControls(this.cameras.main, this.renderer.domElement, {
+      userPan : false,
+      userZoom : false,
+      pan: ()=>{}
+    });
+
     this.renderer.addRenderCallback('controls', this.controls.update.bind(this.controls));
 
     this.mouse.setup(this.cameras.main);

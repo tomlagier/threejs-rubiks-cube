@@ -5,8 +5,9 @@
 /* global THREE */
 
 export default class ThreeControls {
-  constructor(camera, domElement) {
-    this.controller = new THREE.OrbitControls(...arguments);
+  constructor(camera, domElement, options = {}) {
+    this.controller = new THREE.OrbitControls(camera, domElement);
+    _.extend(this.controller, options);
   }
 
   update(){

@@ -33,6 +33,11 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.bindCubeEvents();
   }
 
+  getCurrentIntersectionPoint(toIntersect = this.parts) {
+    let currentIntersections = ThreeHub.scene.mouse.calculateIntersection(toIntersect, true);
+    return currentIntersections.length ? currentIntersections[0].point.clone() : false;
+  }
+
   bindCubeEvents() {
     this.parts.forEach(cube => {
       cube.on('mousedown', () =>{
@@ -40,25 +45,37 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         ThreeHub.scene.controls.controller.enabled = false;
 
         //Reversed because that's the way the axis lookup works
-        let groups = {
-          x: this.getPlaneGroup(cube, 'y'),
-          y: this.getPlaneGroup(cube, 'x')
-        }
 
-        let startPosition = new THREE.Vector2(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y);
-        let endPosition, deltaX, deltaY;
+        let targetCube = new THREE.Box3().setFromObject(cube);
+        let targetIntersectionPoint = ThreeHub.scene.mouse.calculateBoxIntersection(targetCube);
+        let referencePlane = this.createReferencePlane(targetCube, targetIntersectionPoint);
+        console.log({
+          cube,
+          targetCube,
+          targetIntersectionPoint,
+          referencePlane
+        });
 
-        setTimeout(() => {
-          endPosition = new THREE.Vector2(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y);
-          deltaX = Math.abs(endPosition.x - startPosition.x);
-          deltaY = Math.abs(endPosition.y - startPosition.y);
+        let startIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
+        let startMousePosition = ThreeHub.scene.mouse.position.clone();
+        let endIntersectionPoint, delta;
 
-          if(deltaX > deltaY) {
-            this.createRotationGroup(groups.x, 'x');
-          } else {
-            this.createRotationGroup(groups.y, 'y');
+        ThreeHub.scene.renderer.addRenderCallback('mousediff.rubics', () => {
+          if(!ThreeHub.scene.mouse.position.equals(startMousePosition)) {
+            ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
+            endIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
+            delta = endIntersectionPoint.sub(startIntersectionPoint);
+            console.log(delta);
+            let planeAxis = this.getPlaneAxis(referencePlane);
+            let rotationGroupAxis = this.getRotationGroupAxis(delta, planeAxis);
+            let rotationAxis = this.getRotationAxis(delta, rotationGroupAxis, planeAxis);
+            console.log({
+              planeAxis, rotationGroupAxis, rotationAxis
+            });
+            let rotationGroup = this.getRotationGroup(cube, targetCube, rotationAxis);
+            this.createRotationGroup(rotationGroup, rotationGroupAxis, rotationAxis, referencePlane);
           }
-        }, 50);
+        });
 
         ThreeHub.$el.one('mouseup.rubics', () => {
           this.lockPosition();
@@ -67,37 +84,111 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     });
   }
 
-  getPlaneGroup(cube, axis = 'x') {
-    let targetCube = new THREE.Box3().setFromObject(cube);
-    let targetAxis = Math.ceil(targetCube.center()[axis]);
+  getPlaneAxis(plane) {
+    let axis;
+    _.each(plane.normal, (testVal, testAxis)=>{
+      if(testVal !== 0) {
+        axis = testAxis;
+      }
+    });
+
+    return axis;
+  }
+
+  getRotationGroupAxis(delta, planeAxis) {
+    let maxDelta = 0, groupAxis;
+
+    _.each(delta, (diff, axis) => {
+      if(axis !== planeAxis) {
+        if(Math.abs(diff) > maxDelta) {
+          maxDelta = Math.abs(diff);
+          groupAxis = axis;
+        }
+      }
+    });
+
+    return groupAxis;
+  }
+
+  getRotationAxis(delta, groupAxis, planeAxis) {
+    let rotationAxis;
+    _.each(delta, (diff, axis) => {
+      if((axis !== planeAxis) && (axis !== groupAxis)){
+        rotationAxis = axis;
+      }
+    });
+
+    return rotationAxis;
+  }
+
+  getRotationGroup(cube, targetCube, axis) {
+    //Create plane here
+    let targetCenter = targetCube.center();
+    let targetAxis = Math.round(targetCenter[axis]);
     let group = new Set();
     group.add(cube);
     this.parts.forEach(indCube => {
       let testCube = new THREE.Box3().setFromObject(indCube);
-      if(Math.ceil(testCube.center()[axis]) === targetAxis){
+      let testCenter = testCube.center();
+      let testAxis = Math.round(testCenter[axis]);
+      if(testAxis === targetAxis){
         group.add(indCube);
       }
     });
     return Array.from(group);
   }
 
-  createRotationGroup(group, axis) {
+  roundPoint(point) {
+    _.each(point, (loc, key)=>{
+      point[key] = _.round(loc, 6);
+    });
+    return point;
+  }
+
+  findMatchingAxis(cube, point) {
+    point = this.roundPoint(point);
+    let minKey, maxKey, returnKey = false;
+    _.each(point, (loc, axis)=>{
+      minKey = _.findKey(cube.min, (cubeLoc, key)=>{
+        return _.inRange(cubeLoc, loc - 0.001, loc + 0.001)
+      });
+      maxKey = _.findKey(cube.max, (cubeLoc, key)=>{
+        return _.inRange(cubeLoc, loc - 0.001, loc + 0.001)
+      });
+      if(minKey) returnKey = minKey;
+      if(maxKey) returnKey = maxKey;
+    });
+
+    return returnKey;
+  }
+
+  createReferencePlane(targetCube, intersectionPoint) {
+    const matchingAxis = this.findMatchingAxis(targetCube, intersectionPoint);
+
+    let firstPoint = intersectionPoint;
+    let secondPoint = targetCube.min.clone();
+    let thirdPoint = targetCube.max.clone();
+
+    secondPoint[matchingAxis] = intersectionPoint[matchingAxis];
+    thirdPoint[matchingAxis] = intersectionPoint[matchingAxis];
+
+    let plane = new THREE.Plane();
+    return plane.setFromCoplanarPoints(firstPoint, secondPoint, thirdPoint);
+  }
+
+  createRotationGroup(group, deltaAxis, rotationAxis, plane) {
     this.currentlyRotating.addCubes(group);
-    let currentPosition = new THREE.Vector2(),
-        pastPosition = new THREE.Vector2(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y),
+    let currentPosition,
+        pastPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane),
         delta;
 
     ThreeHub.$el.on('mousemove.cubeRotation', () => {
-      currentPosition.set(ThreeHub.scene.mouse.position.x, ThreeHub.scene.mouse.position.y);
+      currentPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane);
 
-      if(axis === 'x') {
-        delta = currentPosition.x - pastPosition.x;
-        this.currentlyRotating.rotateY(delta);
-      } else if (axis === 'y') {
-        delta = currentPosition.y - pastPosition.y;
-        this.currentlyRotating.rotateX(delta);
-      }
-      pastPosition.set(currentPosition.x, currentPosition.y);
+      delta = currentPosition[deltaAxis] - pastPosition[deltaAxis];
+      this.currentlyRotating.rotation[rotationAxis] += delta;
+
+      pastPosition.set(currentPosition.x, currentPosition.y, currentPosition.z);
     });
   }
 

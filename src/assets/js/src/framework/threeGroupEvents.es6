@@ -33,7 +33,6 @@ export default class ThreeGroupEvents{
 
       if(evtType === cbType) {
         cbFunctions.forEach(cb => {
-
           //Break if we're only firing the callback if it's the closest to the pointer
           if ((payload.index !== 0) && cb.first) {
             return;
