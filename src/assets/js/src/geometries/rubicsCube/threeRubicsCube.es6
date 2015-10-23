@@ -14,6 +14,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.url = ['assets/models/centered_cube.obj', 'assets/models/centered_cube.mtl'];
     this.load();
     this.currentlyRotating = new ThreeRubicsCubeSection();
+    ThreeHub.scene.add(new THREE.AxisHelper(50));
   }
 
   onLoad(group) {
@@ -49,29 +50,21 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         let targetCube = new THREE.Box3().setFromObject(cube);
         let targetIntersectionPoint = ThreeHub.scene.mouse.calculateBoxIntersection(targetCube);
         let referencePlane = this.createReferencePlane(targetCube, targetIntersectionPoint);
-        console.log({
-          cube,
-          targetCube,
-          targetIntersectionPoint,
-          referencePlane
-        });
 
         let startIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
         let startMousePosition = ThreeHub.scene.mouse.position.clone();
         let endIntersectionPoint, delta;
+        let counter = 0;
 
         ThreeHub.scene.renderer.addRenderCallback('mousediff.rubics', () => {
-          if(!ThreeHub.scene.mouse.position.equals(startMousePosition)) {
+          counter++;
+          if(counter > 3 && !ThreeHub.scene.mouse.position.equals(startMousePosition)) {
             ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
             endIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
             delta = endIntersectionPoint.sub(startIntersectionPoint);
-            console.log(delta);
             let planeAxis = this.getPlaneAxis(referencePlane);
             let rotationGroupAxis = this.getRotationGroupAxis(delta, planeAxis);
             let rotationAxis = this.getRotationAxis(delta, rotationGroupAxis, planeAxis);
-            console.log({
-              planeAxis, rotationGroupAxis, rotationAxis
-            });
             let rotationGroup = this.getRotationGroup(cube, targetCube, rotationAxis);
             this.createRotationGroup(rotationGroup, rotationGroupAxis, rotationAxis, referencePlane);
           }
@@ -180,16 +173,29 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.currentlyRotating.addCubes(group);
     let currentPosition,
         pastPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane),
-        delta;
+        delta, planeAxis = this.getPlaneAxis(plane), planePositive, deltaMod;
 
     ThreeHub.$el.on('mousemove.cubeRotation', () => {
       currentPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane);
 
       delta = currentPosition[deltaAxis] - pastPosition[deltaAxis];
-      this.currentlyRotating.rotation[rotationAxis] += delta;
+      planePositive = (plane.normal[planeAxis] * plane.constant) > 0 ? '+' : '-';
+      deltaMod = this.getDeltaMod(deltaAxis, rotationAxis, planeAxis, planePositive);
+
+      //PERFORM SOME TRANSLATION HERE DEPENDING ON THE PLANE, DELTA AXIS, AND ROTATION AXIS
+
+      this.currentlyRotating.rotation[rotationAxis] -= (delta * deltaMod);
 
       pastPosition.set(currentPosition.x, currentPosition.y, currentPosition.z);
     });
+  }
+
+  getDeltaMod(deltaAxis, rotationAxis, planeAxis, planePositive) {
+
+    let compiled = deltaAxis + rotationAxis + planeAxis + planePositive;
+    let negatives = ['xyz+', 'xzy-', 'yxz-', 'yzx+', 'zxy+', 'zyx-'];
+
+    return _.includes(negatives, compiled) ? 1 : -1;
   }
 
   lockPosition(){
