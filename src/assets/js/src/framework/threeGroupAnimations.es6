@@ -33,4 +33,12 @@ export default class ThreeGroupAnimations{
 
     return this.animations[timelineName];
   }
+
+  removeAnimation(timelineName) {
+    if(!this.animations[timelineName]) {
+      throw new NotFoundException('ThreeGroupAnimations: Animation not found');
+    }
+
+    delete this.animations[timelineName];
+  }
 }

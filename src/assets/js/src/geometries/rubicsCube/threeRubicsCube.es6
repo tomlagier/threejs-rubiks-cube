@@ -14,7 +14,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.url = ['assets/models/centered_cube.obj', 'assets/models/centered_cube.mtl'];
     this.load();
     this.currentlyRotating = new ThreeRubicsCubeSection();
-    ThreeHub.scene.add(new THREE.AxisHelper(50));
+    //ThreeHub.scene.add(new THREE.AxisHelper(50));
   }
 
   onLoad(group) {
@@ -53,7 +53,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
         let startIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
         let startMousePosition = ThreeHub.scene.mouse.position.clone();
-        let endIntersectionPoint, delta;
+        let endIntersectionPoint, delta, planeAxis, rotationGroupAxis, rotationAxis, rotationGroup;
         let counter = 0;
 
         ThreeHub.scene.renderer.addRenderCallback('mousediff.rubics', () => {
@@ -62,16 +62,16 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
             ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
             endIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
             delta = endIntersectionPoint.sub(startIntersectionPoint);
-            let planeAxis = this.getPlaneAxis(referencePlane);
-            let rotationGroupAxis = this.getRotationGroupAxis(delta, planeAxis);
-            let rotationAxis = this.getRotationAxis(delta, rotationGroupAxis, planeAxis);
-            let rotationGroup = this.getRotationGroup(cube, targetCube, rotationAxis);
+            planeAxis = this.getPlaneAxis(referencePlane);
+            rotationGroupAxis = this.getRotationGroupAxis(delta, planeAxis);
+            rotationAxis = this.getRotationAxis(delta, rotationGroupAxis, planeAxis);
+            rotationGroup = this.getRotationGroup(cube, targetCube, rotationAxis);
             this.createRotationGroup(rotationGroup, rotationGroupAxis, rotationAxis, referencePlane);
           }
         });
 
         ThreeHub.$el.one('mouseup.rubics', () => {
-          this.lockPosition();
+          this.lockPosition(rotationAxis);
         });
       });
     });
@@ -173,7 +173,11 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.currentlyRotating.addCubes(group);
     let currentPosition,
         pastPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane),
-        delta, planeAxis = this.getPlaneAxis(plane), planePositive, deltaMod;
+        planeAxis = this.getPlaneAxis(plane),
+        planePositive,
+        deltaMod,
+        delta,
+        speed = 0.3;
 
     ThreeHub.$el.on('mousemove.cubeRotation', () => {
       currentPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane);
@@ -182,9 +186,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
       planePositive = (plane.normal[planeAxis] * plane.constant) > 0 ? '+' : '-';
       deltaMod = this.getDeltaMod(deltaAxis, rotationAxis, planeAxis, planePositive);
 
-      //PERFORM SOME TRANSLATION HERE DEPENDING ON THE PLANE, DELTA AXIS, AND ROTATION AXIS
-
-      this.currentlyRotating.rotation[rotationAxis] -= (delta * deltaMod);
+      this.currentlyRotating.rotation[rotationAxis] -= (delta * deltaMod * speed);
 
       pastPosition.set(currentPosition.x, currentPosition.y, currentPosition.z);
     });
@@ -198,9 +200,10 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     return _.includes(negatives, compiled) ? 1 : -1;
   }
 
-  lockPosition(){
+  lockPosition(rotationAxis){
     ThreeHub.$el.off('mousemove.cubeRotation');
     ThreeHub.scene.controls.controller.enabled = true;
-    this.currentlyRotating.removeCubes();
+    this.currentlyRotating.snapToFace(rotationAxis);
+    //this.currentlyRotating.removeCubes();
   };
 }

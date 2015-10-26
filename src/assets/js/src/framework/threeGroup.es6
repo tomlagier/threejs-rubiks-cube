@@ -39,4 +39,8 @@ export default class ThreeGroup extends THREE.Group {
   getAnimation(...args) {
     return this.animations.getAnimation(...args);
   }
+
+  removeAnimation(...args) {
+    return this.animations.removeAnimation(...args);
+  }
 }
