@@ -44,6 +44,8 @@ export default class ThreeScene extends THREE.Scene {
     this.controls = new ThreeControls(this.cameras.main, this.renderer.domElement, {
       userPan : false,
       userZoom : false,
+      minPolarAngle: -Math.PI * 2,
+      maxPolarAngle: Math.PI * 2,
       pan: ()=>{}
     });
 

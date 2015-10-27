@@ -41,12 +41,10 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
   bindCubeEvents() {
     this.parts.forEach(cube => {
-      cube.on('mousedown', () =>{
-
+      cube.on('mousedown.dragCube', () =>{
         ThreeHub.scene.controls.controller.enabled = false;
 
         //Reversed because that's the way the axis lookup works
-
         let targetCube = new THREE.Box3().setFromObject(cube);
         let targetIntersectionPoint = ThreeHub.scene.mouse.calculateBoxIntersection(targetCube);
         let referencePlane = this.createReferencePlane(targetCube, targetIntersectionPoint);
@@ -74,6 +72,12 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
           this.lockPosition(rotationAxis);
         });
       });
+    });
+  }
+
+  removeCubeEvents() {
+    this.parts.forEach(cube => {
+      cube.off('mousedown.dragCube');
     });
   }
 
@@ -206,4 +210,91 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.currentlyRotating.snapToFace(rotationAxis);
     //this.currentlyRotating.removeCubes();
   };
+
+  scrambleCube() {
+    if(!this.isScrambling) {
+      this.isScrambling = true;
+
+      this.currentlyRotating.createAnimation('scramble');
+
+      ThreeHub.geometries.cube.removeCubeEvents();
+
+      this.currentScramble = 0;
+
+      this.getScrambleAnimation()();
+      this.currentlyRotating.getAnimation('scramble').play();
+    }
+  }
+
+  getScrambleAnimation() {
+    return () => {
+      const numMoves = 20;
+      let groupAxis, group, rotation;
+      let tweenOpts = {
+        onComplete: this.getScrambleAnimation().bind(this)
+      }
+
+      this.currentScramble++;
+      this.currentlyRotating.removeCubes();
+      if(this.currentScramble < numMoves) {
+        groupAxis = this.getRandomAxis();
+        group = this.getRandomRotationGroup(groupAxis);
+        rotation = this.getRandomRotation();
+
+        this.currentlyRotating.addCubes(group);
+        tweenOpts[groupAxis] = rotation;
+        let rotationTween = TweenMax.to(this.currentlyRotating.rotation, 0.08, tweenOpts);
+        this.currentlyRotating.getAnimation('scramble').add(rotationTween);
+      } else {
+        this.bindCubeEvents();
+        this.currentlyRotating.removeAnimation('scramble');
+        this.isScrambling = false;
+      }
+    }
+  }
+
+  getRandomRotationGroup(groupAxis) {
+    let cube = this.getRandomCube();
+    let targetCube = new THREE.Box3();
+    targetCube.setFromObject(cube);
+    return this.getRotationGroup(cube, targetCube, groupAxis);
+  }
+
+  getPlaneFromRotationGroup(group) {
+    let cubes = [], points = [];
+    let targetCube = new THREE.Box3();
+    for(let i = 0; i < 3; i++) {
+      cubes.push(group[i]);
+    }
+
+    cubes.forEach(cube => {
+      targetCube.setFromObject(cube);
+      console.log(targetCube.center());
+      points.push(targetCube.center().clone());
+    });
+
+    let plane = new THREE.Plane();
+    return plane.setFromCoplanarPoints(points[0], points[1], points[2]);
+  }
+
+  getRandomCube() {
+    return this.parts[Math.floor(Math.random() * 27)];
+  }
+
+  getRandomAxis(axis = ['x', 'y', 'z']) {
+    return axis[Math.floor(Math.random() * axis.length)];
+  }
+
+  getRandomRotation() {
+    let rotation = [];
+    for (let i = 0; i < 4; i++) {
+      rotation.push(i * Math.PI / 2)
+    }
+
+    return rotation[Math.floor(Math.random() * 4)];
+  }
+
+  resetCube() {
+    this.parts.forEach(cube=>cube.rotation.set(0,0,0));
+  }
 }

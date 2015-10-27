@@ -9,16 +9,14 @@ export default class ThreeActions {
   constructor(){}
 
   setup() {
-    // const note4 = ThreeHub.scene.geometries.note4,
-    //       pen = note4.parts.pen,
-    //       body = note4.parts.body;
-    //
-    // body.on('mouseenter', () => {
-    //   pen.getAnimation('slideDown').play();
-    // });
-    //
-    // body.on('mouseleave', () => {
-    //   pen.getAnimation('slideDown').reverse();
-    // });
+    this.$scrambleButton = $('#scramble');
+    this.$scrambleButton.on('click', () => {
+      ThreeHub.geometries.cube.scrambleCube();
+    });
+
+    this.$resetButton = $('#reset');
+    this.$resetButton.on('click', () => {
+      ThreeHub.geometries.cube.resetCube();
+    });
   }
 }

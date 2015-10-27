@@ -14,6 +14,7 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
 
   removeCubes() {
     let toRemove = [];
+    this.updateMatrixWorld();
     this.children.forEach(cube => {
       cube.applyMatrix(this.matrixWorld);
       toRemove.push(cube);
@@ -53,6 +54,7 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
       onComplete: () => {
         this.removeAnimation('lockFace');
         this.removeCubes();
+        ThreeHub.geometries.cube.bindCubeEvents();
       }.bind(this)
     };
 
@@ -60,5 +62,8 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
     let lockFaceTween = TweenMax.to(this.rotation, 0.2, tweenOpts);
 
     this.createAnimation('lockFace').add(lockFaceTween).play();
+
+    //Remove click handler here
+    ThreeHub.geometries.cube.removeCubeEvents();
   }
 }

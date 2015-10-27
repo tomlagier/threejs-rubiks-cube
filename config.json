@@ -11,7 +11,7 @@
     "prod" : ["**", "!assets/css{,/**}", "!assets/js{,/**}"]
   },
   "css" : {
-    "src" : ["<%= src %>/assets/css/src/**/*.css"],
+    "src" : ["<%= src %>/assets/scss/**/*.scss"],
     "lib" : ["<%= src %>/assets/css/lib/**/*.css"]
   },
   "watch" : {

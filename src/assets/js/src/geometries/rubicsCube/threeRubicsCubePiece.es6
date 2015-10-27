@@ -10,4 +10,6 @@ export default class ThreeRubicsCubePiece extends ThreeGroup{
     });
     this.add(piece);
   }
+
+  
 }
