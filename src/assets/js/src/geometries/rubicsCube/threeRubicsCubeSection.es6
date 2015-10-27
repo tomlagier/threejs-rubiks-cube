@@ -19,7 +19,22 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
       cube.applyMatrix(this.matrixWorld);
       toRemove.push(cube);
     });
-    toRemove.forEach(cube => ThreeHub.scene.add(cube));
+
+    const fullRot = 2 * Math.PI;
+    toRemove.forEach(cube => {
+
+      _.each(cube.rotation.toVector3(), (rotVal, axis) => {
+        if(rotVal >= fullRot) {
+          cube.rotation[axis] -= fullRot;
+        }
+        if(rotVal <= -fullRot) {
+          cube.rotation[axis] += fullRot;
+        }
+
+        cube.rotation[axis] = _.round(cube.rotation[axis], 4);
+      });
+      ThreeHub.scene.add(cube);
+    });
     ThreeHub.scene.remove(this);
   }
 
@@ -54,6 +69,7 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
       onComplete: () => {
         this.removeAnimation('lockFace');
         this.removeCubes();
+        ThreeHub.geometries.cube.checkSolved();
         ThreeHub.geometries.cube.bindCubeEvents();
       }.bind(this)
     };

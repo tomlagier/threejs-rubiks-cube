@@ -212,6 +212,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
   };
 
   scrambleCube() {
+    $('#solved').fadeOut();
     if(!this.isScrambling) {
       this.isScrambling = true;
 
@@ -296,5 +297,27 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
   resetCube() {
     this.parts.forEach(cube=>cube.rotation.set(0,0,0));
+    this.checkSolved();
+  }
+
+  checkSolved(){
+    if(this.isSolved()) {
+      $('#solved').fadeIn();
+    } else {
+      $('#solved').fadeOut();
+    }
+  }
+
+  isSolved() {
+    let startVector = new THREE.Vector3(this.parts[0].rotation.x, this.parts[0].rotation.y, this.parts[0].rotation.z),
+        testVector = new THREE.Vector3();
+    let solved = true;
+    this.parts.forEach(cube => {
+      testVector.set(cube.rotation.x, cube.rotation.y, cube.rotation.z);
+      if(!testVector.equals(startVector)) {
+        solved = false;
+      }
+    });
+    return solved;
   }
 }
