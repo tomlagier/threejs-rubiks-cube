@@ -205,7 +205,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
   }
 
   lockPosition(rotationAxis){
-    ThreeHub.$el.off('mousemove.cubeRotation');
+    ThreeHub.$el.off('mousemove.cubeRotation touchmove.cubeRotation');
     ThreeHub.scene.controls.controller.enabled = true;
     this.currentlyRotating.snapToFace(rotationAxis);
     //this.currentlyRotating.removeCubes();

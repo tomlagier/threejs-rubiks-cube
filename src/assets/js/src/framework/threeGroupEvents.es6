@@ -11,17 +11,13 @@ export default class ThreeGroupEvents{
   }
 
   //first = Does the target need to be closest to the cursor (directly visible)?
-  on(evts, callback, first = true){
-    let events = evts.split(' ');
-    let evtParts, evtType, namespace;
-    events.forEach(event => {
-      const evtParts = event.split('.'),
-            evtType = evtParts[0],
-            namespace = evtParts[1];
+  on(evt, callback, first = true){
+    const evtParts = evt.split('.'),
+          evtType = evtParts[0],
+          namespace = evtParts[1];
 
-      ThreeHub.scene.mouse.addListener(this.parent, evtType);
-      this.addCallback(evtType, {callback, first, namespace});
-    });
+    ThreeHub.scene.mouse.addListener(this.parent, evtType);
+    this.addCallback(evtType, {callback, first, namespace});
   }
 
   //Supports namespacing

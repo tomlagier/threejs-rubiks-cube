@@ -24,12 +24,12 @@ export default class ThreeMouse {
 
     //Custom events
     //Anything that needs to keep track of element state
-    $(document).on('ready mousemove touchmove', this.setMouseLocalPosition.bind(this));
-    ThreeHub.el.addEventListener('mousemove touchmove', this.runMoveCallbacks.bind(this));
+    $(document).on('ready mousemove', this.setMouseLocalPosition.bind(this));
+    ThreeHub.el.addEventListener('mousemove', this.runMoveCallbacks.bind(this));
 
     //Generic events
     //"Fire and forget"
-    const genericEvents = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend'];
+    const genericEvents = ['click', 'mousedown', 'mouseup'];
 
     genericEvents.forEach(eventType=>{
       ThreeHub.el.addEventListener(eventType, ()=>{
