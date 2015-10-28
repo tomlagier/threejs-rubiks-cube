@@ -24,12 +24,16 @@ export default class ThreeMouse {
 
     //Custom events
     //Anything that needs to keep track of element state
-    $(document).on('ready mousemove', this.setMouseLocalPosition.bind(this));
+    // $(document).on('ready mousemove touchmove', this.setMouseLocalPosition.bind(this));
+    // ThreeHub.el.addEventListener('mousemove touchmove', this.runMoveCallbacks.bind(this));
+
+    $(document).on('ready mousemove mousedown', this.setMouseLocalPosition.bind(this));
+    $(document).on('touchstart touchmove', this.setTouchLocalPosition.bind(this));
     ThreeHub.el.addEventListener('mousemove', this.runMoveCallbacks.bind(this));
 
     //Generic events
     //"Fire and forget"
-    const genericEvents = ['click', 'mousedown', 'mouseup'];
+    const genericEvents = ['click', 'mousedown', 'mouseup', 'touchstart', 'touchend'];
 
     genericEvents.forEach(eventType=>{
       ThreeHub.el.addEventListener(eventType, ()=>{
@@ -50,7 +54,19 @@ export default class ThreeMouse {
     //Local position
     let x = ( event.clientX / window.innerWidth ) * 2 - 1;
     let y = -( event.clientY / window.innerHeight ) * 2 + 1;
-    this.position.set(x, y);
+    if((x !== NaN) && (y !== NaN)) {
+      this.position.set(x, y);
+    }
+  }
+
+  setTouchLocalPosition(event) {
+    //Local position
+    const touches = event.originalEvent.touches[0];
+    let x = ( touches.clientX / window.innerWidth ) * 2 - 1;
+    let y = -( touches.clientY / window.innerHeight ) * 2 + 1;
+    if((x !== NaN) && (y !== NaN)) {
+      this.position.set(x, y);
+    }
   }
 
   getMouseWorldPosition(z) {
@@ -77,6 +93,11 @@ export default class ThreeMouse {
   calculateIntersection(object, recursive = true) {
     this.raycaster.setFromCamera(this.position, this.camera);
     return this.raycaster.intersectObjects(object, recursive);
+  }
+
+  intersectPlane(plane) {
+    this.raycaster.setFromCamera(this.position, this.camera);
+    return this.raycaster.ray.intersectPlane(plane);
   }
 
   getObjectIntersections(intersections) {

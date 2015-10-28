@@ -56,7 +56,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
         ThreeHub.scene.renderer.addRenderCallback('mousediff.rubics', () => {
           counter++;
-          if(counter > 3 && !ThreeHub.scene.mouse.position.equals(startMousePosition)) {
+          if(counter > 5 && !ThreeHub.scene.mouse.position.equals(startMousePosition)) {
             ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
             endIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
             delta = endIntersectionPoint.sub(startIntersectionPoint);
@@ -176,7 +176,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
   createRotationGroup(group, deltaAxis, rotationAxis, plane) {
     this.currentlyRotating.addCubes(group);
     let currentPosition,
-        pastPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane),
+        pastPosition = ThreeHub.scene.mouse.intersectPlane(plane),
         planeAxis = this.getPlaneAxis(plane),
         planePositive,
         deltaMod,
@@ -184,7 +184,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         speed = 0.3;
 
     ThreeHub.$el.on('mousemove.cubeRotation touchmove.cubeRotation', () => {
-      currentPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane);
+      currentPosition = ThreeHub.scene.mouse.intersectPlane(plane);
 
       delta = currentPosition[deltaAxis] - pastPosition[deltaAxis];
       planePositive = (plane.normal[planeAxis] * plane.constant) > 0 ? '+' : '-';
