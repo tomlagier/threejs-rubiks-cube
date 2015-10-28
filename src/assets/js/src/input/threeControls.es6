@@ -6,7 +6,7 @@
 
 export default class ThreeControls {
   constructor(camera, domElement, options = {}) {
-    this.controller = new THREE.TrackballControls(camera, domElement);
+    this.controller = new THREE.OrbitControls(camera, domElement);
     _.extend(this.controller, options);
   }
 
