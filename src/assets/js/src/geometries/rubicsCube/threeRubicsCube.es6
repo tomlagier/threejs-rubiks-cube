@@ -41,7 +41,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
   bindCubeEvents() {
     this.parts.forEach(cube => {
-      cube.on('mousedown.dragCube', () =>{
+      cube.on('mousedown.dragCube touchstart.dragCube', () =>{
         ThreeHub.scene.controls.controller.enabled = false;
 
         //Reversed because that's the way the axis lookup works
@@ -68,7 +68,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
           }
         });
 
-        ThreeHub.$el.one('mouseup.rubics', () => {
+        ThreeHub.$el.one('mouseup.rubics touchend.rubics', () => {
           this.lockPosition(rotationAxis);
         });
       });
@@ -77,7 +77,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
   removeCubeEvents() {
     this.parts.forEach(cube => {
-      cube.off('mousedown.dragCube');
+      cube.off('mousedown.dragCube touchstart.dragCube');
     });
   }
 
@@ -183,7 +183,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         delta,
         speed = 0.3;
 
-    ThreeHub.$el.on('mousemove.cubeRotation', () => {
+    ThreeHub.$el.on('mousemove.cubeRotation touchmove.cubeRotation', () => {
       currentPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane);
 
       delta = currentPosition[deltaAxis] - pastPosition[deltaAxis];
