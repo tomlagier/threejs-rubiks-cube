@@ -15,7 +15,7 @@ export default class ThreeGroupEvents{
     let events = evts.split(' ');
     let evtParts, evtType, namespace;
     events.forEach(event => {
-      const evtParts = evt.split('.'),
+      const evtParts = event.split('.'),
             evtType = evtParts[0],
             namespace = evtParts[1];
 
