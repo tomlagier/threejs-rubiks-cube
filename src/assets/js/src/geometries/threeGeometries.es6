@@ -15,9 +15,9 @@ export default class ThreeGeometries {
 
   setup() {
     //this.note4 = new ThreeNote4();
-    this.skyBox = new ThreeSkybox(
-      ThreeHub.textures.get('skyBox')
-    );
+    // this.skyBox = new ThreeSkybox(
+    //   ThreeHub.textures.get('skyBox')
+    // );
     this.cube = new ThreeRubicsCube();
     //this.reflectionRectangle = new ThreeWebcamReflection();
   }

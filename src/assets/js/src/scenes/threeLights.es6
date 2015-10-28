@@ -8,39 +8,43 @@ import ThreeHub from '../framework/threeHub.es6';
 export default class ThreeLights {
   constructor() {
     this.lights = {
-      ambientLight: new THREE.AmbientLight(0x444444),
-      directionalLight1: new THREE.DirectionalLight(0xffffff, 1),
-      directionalLight2: new THREE.DirectionalLight(0xffffff, 1.5),
-      directionalLight3: new THREE.DirectionalLight(0xffffff, 1.5),
-      spotLight: new THREE.SpotLight(0xffffff, 2, 100, 0.5)
+      ambientLight: new THREE.AmbientLight(0xffffff),
+      pointLight1: new THREE.PointLight(0xffffff, 0.15),
+      pointLight2: new THREE.PointLight(0xffffff, 0.15),
+      pointLight3: new THREE.PointLight(0xffffff, 0.15),
+      pointLight4: new THREE.PointLight(0xffffff, 0.15),
+      pointLight5: new THREE.PointLight(0xffffff, 0.15),
+      pointLight6: new THREE.PointLight(0xffffff, 0.15),
+      pointLight7: new THREE.PointLight(0xffffff, 0.15),
+      pointLight8: new THREE.PointLight(0xffffff, 0.15),
+      pointLight9: new THREE.PointLight(0xffffff, 0.001),
+      pointLight10: new THREE.PointLight(0xffffff, 0.001),
+      pointLight11: new THREE.PointLight(0xffffff, 0.001),
+      pointLight12: new THREE.PointLight(0xffffff, 0.001),
+      pointLight13: new THREE.PointLight(0xffffff, 0.001),
+      pointLight14: new THREE.PointLight(0xffffff, 0.001),
     };
 
     this.setupLightPositions();
   }
 
   setupLightPositions(){
-    let angle = Math.PI / 2;
 
-    this.lights.spotLight.position.set(5, 5, 20);
-    this.lights.spotLight.castShadow = true;
+    this.lights.pointLight1.position.set(25, 25, 25);
+    this.lights.pointLight2.position.set(25, 25, -25);
+    this.lights.pointLight3.position.set(25, -25, 25);
+    this.lights.pointLight4.position.set(-25, 25, 25);
+    this.lights.pointLight5.position.set(-25, -25, 25);
+    this.lights.pointLight6.position.set(25, -25, -25);
+    this.lights.pointLight7.position.set(-25, 25, -25);
+    this.lights.pointLight8.position.set(-25, -25, -25);
 
-    let rotationMatrix = new THREE.Matrix4();
-
-    let position1 = new THREE.Vector3(0, 0, 1);
-    let position2 = new THREE.Vector3(-2, 0, -3);
-    let position3 = new THREE.Vector3(1, 0, -3);
-
-    let axis = new THREE.Vector3(1, 0, 0).normalize();
-
-    rotationMatrix = new THREE.Matrix4().makeRotationAxis(axis, angle);
-
-    position1.applyMatrix4(rotationMatrix);
-    position2.applyMatrix4(rotationMatrix);
-    position3.applyMatrix4(rotationMatrix);
-
-    this.lights.directionalLight1.position.set(position1.x, position1.y, position1.z).normalize();
-    this.lights.directionalLight2.position.set(position2.x, position2.y, position2.z).normalize();
-    this.lights.directionalLight3.position.set(position3.x, position3.y, position3.z).normalize();
+    this.lights.pointLight9.position.set(100, 0, 0);
+    this.lights.pointLight10.position.set(-100, 0, 0);
+    this.lights.pointLight11.position.set(0, 100, 0);
+    this.lights.pointLight12.position.set(0, -100, 0);
+    this.lights.pointLight13.position.set(0, 0, 100);
+    this.lights.pointLight14.position.set(0, 0, -100);
   }
 
   setup() {
