@@ -1,0 +1,26 @@
+.canvas-wrapper {
+  width: 100%; 
+  height: 100%;
+  // background-image: url('/assets/images/background-image.jpg');
+  // background-size: cover;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.texture-wrapper {
+  position: absolute;
+  right: 100000px;
+}
+
+#video-player {
+  width: 975px;
+  height: 720px;
+}
+
+#video-canvas {
+  width: 415px;
+  height: 720px;
+}

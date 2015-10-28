@@ -1,5 +1,4 @@
 .DS_Store
-/target
 /conf/config.php
 .cache.properties
 composer.lock
@@ -47,4 +46,3 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
-
