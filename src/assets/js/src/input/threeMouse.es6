@@ -67,6 +67,8 @@ export default class ThreeMouse {
     if((x !== NaN) && (y !== NaN)) {
       this.position.set(x, y);
     }
+
+    event.preventDefault();
   }
 
   getMouseWorldPosition(z) {
