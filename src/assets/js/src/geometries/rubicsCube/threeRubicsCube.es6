@@ -11,7 +11,7 @@ import ThreeHub from '../../framework/threeHub.es6';
 export default class ThreeRubicsCube extends ThreeGeometryFile {
   constructor() {
     super();
-    this.url = ['assets/models/centered_cube.obj', 'assets/models/centered_cube.mtl'];
+    this.url = ['assets/models/rubicsfinal.obj', 'assets/models/rubicsfinal.mtl'];
     this.load();
     this.currentlyRotating = new ThreeRubicsCubeSection();
     //ThreeHub.scene.add(new THREE.AxisHelper(50));
@@ -176,7 +176,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
   createRotationGroup(group, deltaAxis, rotationAxis, plane) {
     this.currentlyRotating.addCubes(group);
     let currentPosition,
-        pastPosition = ThreeHub.scene.mouse.intersectPlane(plane),
+        pastPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane),
         planeAxis = this.getPlaneAxis(plane),
         planePositive,
         deltaMod,
@@ -184,7 +184,8 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         speed = 0.3;
 
     ThreeHub.$el.on('mousemove.cubeRotation touchmove.cubeRotation', () => {
-      currentPosition = ThreeHub.scene.mouse.intersectPlane(plane);
+      console.log
+      currentPosition = ThreeHub.scene.mouse.raycaster.ray.intersectPlane(plane);
 
       delta = currentPosition[deltaAxis] - pastPosition[deltaAxis];
       planePositive = (plane.normal[planeAxis] * plane.constant) > 0 ? '+' : '-';

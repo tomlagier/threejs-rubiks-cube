@@ -50,7 +50,13 @@ export default class ThreeGeometryLoader {
           this.getUrlByExtension('json'),
           this.callback
         );
-      } else {
+      } else if(this.urlHasExtension('dae')) {
+        this.loader = new THREE.ColladaLoader();
+        this.loader.load(
+          this.getUrlByExtension('dae'),
+          this.callback
+        )
+      }else {
         throw new UnsupportedLoaderException('GeometryFile: Only OBJMTL, OBJ, and JSON loaders are supported');
       }
     }

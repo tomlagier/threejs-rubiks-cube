@@ -17,7 +17,7 @@ export default class ThreeCameras {
   }
 
   setCameraPositions() {
-    this.main.position.set(0, 0, 20);
+    this.main.position.set(0, 0, 10);
     this.main.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.cube.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
