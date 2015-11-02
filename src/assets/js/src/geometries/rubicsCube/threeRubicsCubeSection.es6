@@ -31,7 +31,7 @@ export default class ThreeRubicsCubeSection extends ThreeGroup {
           cube.rotation[axis] += fullRot;
         }
 
-        cube.rotation[axis] = _.round(cube.rotation[axis], 6);
+        cube.rotation[axis] = _.round(cube.rotation[axis], 4);
       });
       ThreeHub.scene.add(cube);
     });

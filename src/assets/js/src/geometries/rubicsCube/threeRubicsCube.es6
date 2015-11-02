@@ -181,7 +181,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
         planePositive,
         deltaMod,
         delta,
-        speed = 0.3;
+        speed = 0.5;
 
     ThreeHub.$el.on('mousemove.cubeRotation touchmove.cubeRotation', () => {
       console.log
