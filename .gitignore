@@ -6,6 +6,7 @@ composer.lock
 **.tmp
 /.tmp-gulp-scss-sprites
 *.bundle/
+deploy/
 
 ### Bower ###
 bower_components
@@ -46,3 +47,8 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

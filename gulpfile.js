@@ -18,7 +18,8 @@ var gulp = require('gulp'),
   debug = require('gulp-debug'),
   concat = require('gulp-concat'),
   path = require('path'),
-  sass = require('gulp-sass');
+  sass = require('gulp-sass'),
+  zip = require('gulp-zip');
 
 // PostCSS transforms
 // Only use the ones you'll actually use!
@@ -242,6 +243,12 @@ gulp.task('webpack-dev-server', ['build'], function () {
   });
 });
 
+gulp.task('zip', function(){
+  return gulp.src(config.build + '/**')
+      .pipe(zip('build.zip'))
+      .pipe(gulp.dest(config.deploy));
+});
+
 ////// BUILDING //////
 gulp.task('build', function (callback) {
   runSequence('clean', ['copy', 'css', 'css-lib', 'js-lib'], callback);
@@ -257,3 +264,4 @@ gulp.task('watch', ['webpack-dev-server'], function () {
 ////// START //////
 gulp.task('dev', ['setdev', 'build', 'watch']);
 gulp.task('default', ['build', 'webpack']);
+gulp.task('deploy', ['build', 'webpack', 'zip', 'eb']);

@@ -14,7 +14,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.url = ['assets/models/rubicsfinal.obj', 'assets/models/rubicsfinal.mtl'];
     this.load();
     this.currentlyRotating = new ThreeRubicsCubeSection();
-    //ThreeHub.scene.add(new THREE.AxisHelper(50));
+    ThreeHub.scene.add(new THREE.AxisHelper(50));
   }
 
   onLoad(group) {
@@ -142,16 +142,17 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     return point;
   }
 
+  //Bug in here that finds the wrong matching axis!
   findMatchingAxis(cube, point) {
     point = this.roundPoint(point);
     let minKey, maxKey, returnKey = false;
     _.each(point, (loc, axis)=>{
-      minKey = _.findKey(cube.min, (cubeLoc, key)=>{
-        return _.inRange(cubeLoc, loc - 0.001, loc + 0.001)
-      });
-      maxKey = _.findKey(cube.max, (cubeLoc, key)=>{
-        return _.inRange(cubeLoc, loc - 0.001, loc + 0.001)
-      });
+      if(_.inRange(cube.min[axis], loc - 0.001, loc + 0.001)) {
+        minKey = axis;
+      }
+      if(_.inRange(cube.max[axis], loc - 0.001, loc + 0.001)) {
+        maxKey = axis;
+      }
       if(minKey) returnKey = minKey;
       if(maxKey) returnKey = maxKey;
     });

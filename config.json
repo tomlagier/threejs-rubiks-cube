@@ -1,6 +1,7 @@
 {
   "build" : "./target",
   "src" : "./src",
+  "deploy": "./deploy",
   "temp" : "./temp",
   "js" : {
     "src" : ["<%= src %>/assets/js/src/main.es6"],
