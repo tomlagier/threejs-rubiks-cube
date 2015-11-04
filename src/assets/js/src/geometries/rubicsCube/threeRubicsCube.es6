@@ -14,7 +14,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     this.url = ['assets/models/rubicsfinal.obj', 'assets/models/rubicsfinal.mtl'];
     this.load();
     this.currentlyRotating = new ThreeRubicsCubeSection();
-    ThreeHub.scene.add(new THREE.AxisHelper(50));
+    //ThreeHub.scene.add(new THREE.AxisHelper(50));
   }
 
   onLoad(group) {
@@ -39,39 +39,42 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     return currentIntersections.length ? currentIntersections[0].point.clone() : false;
   }
 
+  cubeEvents(cube) {
+    ThreeHub.scene.controls.controller.enabled = false;
+    this.removeCubeEvents();
+    //Reversed because that's the way the axis lookup works
+    let targetCube = new THREE.Box3().setFromObject(cube);
+    let targetIntersectionPoint = ThreeHub.scene.mouse.calculateBoxIntersection(targetCube);
+    let referencePlane = this.createReferencePlane(targetCube, targetIntersectionPoint);
+
+    let startIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
+    let startMousePosition = ThreeHub.scene.mouse.position.clone();
+    let endIntersectionPoint, delta, planeAxis, rotationGroupAxis, rotationAxis, rotationGroup;
+    let counter = 0;
+
+    ThreeHub.scene.renderer.addRenderCallback('mousediff.rubics', () => {
+      counter++;
+      if(counter > 5 && !ThreeHub.scene.mouse.position.equals(startMousePosition)) {
+        ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
+        endIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
+        delta = endIntersectionPoint.sub(startIntersectionPoint);
+        planeAxis = this.getPlaneAxis(referencePlane);
+        rotationGroupAxis = this.getRotationGroupAxis(delta, planeAxis);
+        rotationAxis = this.getRotationAxis(delta, rotationGroupAxis, planeAxis);
+        rotationGroup = this.getRotationGroup(cube, targetCube, rotationAxis);
+        this.createRotationGroup(rotationGroup, rotationGroupAxis, rotationAxis, referencePlane);
+      }
+    });
+
+    ThreeHub.$el.one('mouseup.rubics touchend.rubics', () => {
+      ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
+      this.lockPosition(rotationAxis);
+    });
+  }
+
   bindCubeEvents() {
     this.parts.forEach(cube => {
-      cube.on('mousedown.dragCube touchstart.dragCube', () =>{
-        ThreeHub.scene.controls.controller.enabled = false;
-
-        //Reversed because that's the way the axis lookup works
-        let targetCube = new THREE.Box3().setFromObject(cube);
-        let targetIntersectionPoint = ThreeHub.scene.mouse.calculateBoxIntersection(targetCube);
-        let referencePlane = this.createReferencePlane(targetCube, targetIntersectionPoint);
-
-        let startIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
-        let startMousePosition = ThreeHub.scene.mouse.position.clone();
-        let endIntersectionPoint, delta, planeAxis, rotationGroupAxis, rotationAxis, rotationGroup;
-        let counter = 0;
-
-        ThreeHub.scene.renderer.addRenderCallback('mousediff.rubics', () => {
-          counter++;
-          if(counter > 5 && !ThreeHub.scene.mouse.position.equals(startMousePosition)) {
-            ThreeHub.scene.renderer.removeRenderCallback('mousediff.rubics');
-            endIntersectionPoint = referencePlane.projectPoint(this.getCurrentIntersectionPoint());
-            delta = endIntersectionPoint.sub(startIntersectionPoint);
-            planeAxis = this.getPlaneAxis(referencePlane);
-            rotationGroupAxis = this.getRotationGroupAxis(delta, planeAxis);
-            rotationAxis = this.getRotationAxis(delta, rotationGroupAxis, planeAxis);
-            rotationGroup = this.getRotationGroup(cube, targetCube, rotationAxis);
-            this.createRotationGroup(rotationGroup, rotationGroupAxis, rotationAxis, referencePlane);
-          }
-        });
-
-        ThreeHub.$el.one('mouseup.rubics touchend.rubics', () => {
-          this.lockPosition(rotationAxis);
-        });
-      });
+      cube.on('mousedown.dragCube touchstart.dragCube', this.cubeEvents.bind(this, cube));
     });
   }
 
@@ -210,7 +213,6 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
     ThreeHub.$el.off('mousemove.cubeRotation touchmove.cubeRotation');
     ThreeHub.scene.controls.controller.enabled = true;
     this.currentlyRotating.snapToFace(rotationAxis);
-    //this.currentlyRotating.removeCubes();
   };
 
   scrambleCube() {
@@ -220,7 +222,7 @@ export default class ThreeRubicsCube extends ThreeGeometryFile {
 
       this.currentlyRotating.createAnimation('scramble');
 
-      ThreeHub.geometries.cube.removeCubeEvents();
+      this.removeCubeEvents();
 
       this.currentScramble = 0;
 
