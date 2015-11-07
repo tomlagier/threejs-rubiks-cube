@@ -18,8 +18,7 @@ var gulp = require('gulp'),
   debug = require('gulp-debug'),
   concat = require('gulp-concat'),
   path = require('path'),
-  sass = require('gulp-sass'),
-  zip = require('gulp-zip');
+  sass = require('gulp-sass');
 
 // PostCSS transforms
 // Only use the ones you'll actually use!
@@ -151,6 +150,18 @@ gulp.task('css-lib', [], function () {
     .pipe(gulp.dest(dest));
 });
 
+////// JS //////
+// gulp.task('js', [], function () {
+//   var dest = path.join(config.build, 'assets/js');
+
+//   gulp.src(config.js.src)
+//     .pipe(debug())
+//     .pipe(babel().on('error', function(error){
+//       gutil.error('[error!]', error.message);
+//     }))
+//     .pipe(gulp.dest(dest));
+// });
+
 gulp.task('js-lib', [], function () {
   var dest = path.join(config.build, 'assets/js');
 
@@ -231,12 +242,6 @@ gulp.task('webpack-dev-server', ['build'], function () {
   });
 });
 
-gulp.task('zip', function(){
-  return gulp.src(config.build + '/**')
-      .pipe(zip('build.zip'))
-      .pipe(gulp.dest(config.deploy));
-});
-
 ////// BUILDING //////
 gulp.task('build', function (callback) {
   runSequence('clean', ['copy', 'css', 'css-lib', 'js-lib'], callback);
@@ -244,7 +249,6 @@ gulp.task('build', function (callback) {
 
 /////// WATCHING //////
 gulp.task('watch', ['webpack-dev-server'], function () {
-  gulp.watch(config.watch.scss, ['css']);
   gulp.watch(config.watch.cssLib, ['css-lib']);
   gulp.watch(config.watch.jsLib, ['js-lib']);
   gulp.watch(config.watch.staticFiles, ['copy']);
@@ -253,4 +257,3 @@ gulp.task('watch', ['webpack-dev-server'], function () {
 ////// START //////
 gulp.task('dev', ['setdev', 'build', 'watch']);
 gulp.task('default', ['build', 'webpack']);
-//gulp.task('deploy', ['build', 'webpack', 'zip', 'eb']);
