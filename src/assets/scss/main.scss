@@ -3,3 +3,8 @@
 @import 'canvas';
 @import 'ui';
 @import 'buttons';
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: greyscale;
+}

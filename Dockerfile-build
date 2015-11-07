@@ -1,0 +1,4 @@
+FROM tomlagier/base-project-build:v1
+COPY ./ /build
+RUN cd /build && npm install && npm run-script build
+RUN tar -zcvf /build/build.tar.gz -C /build/target .

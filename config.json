@@ -32,11 +32,12 @@
       "<%= src %>/assets/json/**",
       "<%= src %>/assets/templates/**"
     ],
+    "scss": ["<%= src %>/assets/scss/**"],
     "cssLib" : [
-      "<%= src %>/assets/textures/css/lib"
+      "<%= src %>/assets/css/lib/**"
     ],
     "jsLib" : [
-      "<%= src %>/assets/textures/js/lib"
+      "<%= src %>/assets/js/lib/**"
     ]
   },
   "webpack" : {
