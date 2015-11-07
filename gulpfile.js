@@ -244,7 +244,7 @@ gulp.task('build', function (callback) {
 
 /////// WATCHING //////
 gulp.task('watch', ['webpack-dev-server'], function () {
-  gulp.watch(config.watch.scss, ['css']);
+  gulp.watch(config.watch.scss, ['scss']);
   gulp.watch(config.watch.cssLib, ['css-lib']);
   gulp.watch(config.watch.jsLib, ['js-lib']);
   gulp.watch(config.watch.staticFiles, ['copy']);
