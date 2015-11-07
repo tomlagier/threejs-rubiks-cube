@@ -151,6 +151,17 @@ gulp.task('css-lib', [], function () {
     .pipe(gulp.dest(dest));
 });
 
+////// JS //////
+// gulp.task('js', [], function () {
+//   var dest = path.join(config.build, 'assets/js');
+
+//   gulp.src(config.js.src)
+//     .pipe(debug())
+//     .pipe(babel().on('error', function(error){
+//       gutil.error('[error!]', error.message);
+//     }))
+//     .pipe(gulp.dest(dest));
+// });
 
 gulp.task('js-lib', [], function () {
   var dest = path.join(config.build, 'assets/js');
