@@ -24,7 +24,6 @@ var gulp = require('gulp'),
 // PostCSS transforms
 // Only use the ones you'll actually use!
 var //colorFunction = require('postcss-color-function'),
-  //colorGray = require('postcss-color-gray'),
   //colorHexAlpha = require('postcss-color-hex-alpha'),
   //customMedia = require('postcss-custom-media'),
   //customSelectors = require('postcss-custom-selectors'),
@@ -256,7 +255,7 @@ gulp.task('build', function (callback) {
 
 /////// WATCHING //////
 gulp.task('watch', ['webpack-dev-server'], function () {
-  gulp.watch(config.watch.scss, ['scss']);
+  gulp.watch.(config.watch.scss, ['scss']);
   gulp.watch(config.watch.cssLib, ['css-lib']);
   gulp.watch(config.watch.jsLib, ['js-lib']);
   gulp.watch(config.watch.staticFiles, ['copy']);
