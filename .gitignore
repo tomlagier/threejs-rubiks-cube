@@ -7,6 +7,7 @@ composer.lock
 /.tmp-gulp-scss-sprites
 *.bundle/
 deploy/
+build/build.tar.gz
 
 ### Bower ###
 bower_components
