@@ -1,6 +1,6 @@
 ##CWD is ./
-PROJECT="$(dirname "$(pwd)")"
-echo $PROJECT
+PARENT="$(dirname "$(pwd)")"
+PROJECT=${PARENT##*/}
 
 mv Dockerfile-build ../
 docker kill $PROJECT-build
