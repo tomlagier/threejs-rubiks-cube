@@ -12,7 +12,7 @@ docker rm $PROJECT-build
 docker kill $PROJECT-host
 docker rm $PROJECT-host
 docker build -t tomlagier/$PROJECT-host -f Dockerfile-host ./
-HOST_PORT=$(jq -r .hostPort package.json)
+HOST_PORT=$(jq -r .hostPort ../package.json)
 docker run -d -p $HOST_PORT:80 --name $PROJECT-host tomlagier/$PROJECT-host
 rm build.tar.gz
 
