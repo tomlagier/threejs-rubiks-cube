@@ -1,6 +1,6 @@
 ##CWD is ./
-REPODIR=${PWD%.*}
-PROJECT=${REPODIR##*/}
+PROJECT="$(dirname "$(pwd)")"
+echo $PROJECT
 
 mv Dockerfile-build ../
 docker kill $PROJECT-build
