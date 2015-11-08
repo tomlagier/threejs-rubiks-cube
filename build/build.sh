@@ -4,7 +4,7 @@ PROJECT=${PARENT##*/}
 echo $PROJECT
 ls
 
-mv ./Dockerfile-build ../
+mv Dockerfile-build ../
 docker kill $PROJECT-build
 docker rm $PROJECT-build
 docker build -t tomlagier/$PROJECT-build -f ../Dockerfile-build ../
