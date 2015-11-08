@@ -2,6 +2,7 @@
 PARENT="$(dirname "$(pwd)")"
 PROJECT=${PARENT##*/}
 
+
 docker kill $PROJECT-build
 docker rm $PROJECT-build
 docker build -t tomlagier/$PROJECT-build -f Dockerfile-build ../
