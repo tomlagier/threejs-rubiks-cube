@@ -265,5 +265,4 @@ gulp.task('watch', ['webpack-dev-server'], function () {
 ////// START //////
 gulp.task('dev', ['setdev', 'build', 'watch']);
 gulp.task('default', ['build', 'webpack']);
-
 //gulp.task('deploy', ['build', 'webpack', 'zip', 'eb']);
