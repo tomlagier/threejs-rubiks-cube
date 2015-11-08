@@ -15,7 +15,3 @@ docker build -t tomlagier/$PROJECT-host -f Dockerfile-host ./
 HOST_PORT=$(jq -r .hostPort ../package.json)
 docker run -d -p $HOST_PORT:80 --name $PROJECT-host tomlagier/$PROJECT-host
 rm build.tar.gz
-
-
-#Clean up images
-docker rmi $(docker images -q)
